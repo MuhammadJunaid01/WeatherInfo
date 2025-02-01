@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1079306693530",
+    "project_id": "weatherinfo-160ef",
+    "storage_bucket": "weatherinfo-160ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079306693530:android:43e400145e7a6e0b9c6823",
+        "android_client_info": {
+          "package_name": "com.weatherinfo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-gqwNJ5Tqd7WueaCWkuv5W6NEsQC0zvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
