@@ -1,26 +1,17 @@
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 
 // Screens
-import {RootStackParamList} from '../lib/types';
-import {HomeScreen} from '../screens';
+import RootNavigation from './RootNavigation';
 
 // Create a Stack Navigator with typed param list
-const Stack = createStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{}} initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          options={{headerShown: false}}
-          component={HomeScreen}
-        />
-      </Stack.Navigator>
+      <RootNavigation />
     </NavigationContainer>
   );
 };
 
-export default AppNavigator;
+export default React.memo(AppNavigator);
