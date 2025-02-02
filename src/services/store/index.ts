@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
 import {
@@ -5,7 +6,6 @@ import {
   reducer as network,
 } from 'react-native-offline';
 import {persistReducer, persistStore} from 'redux-persist';
-import {storage} from '../../lib/db';
 import {apiSlice} from '../apis/apiSlice'; // Adjust the path as necessary
 import authReducer from '../features/authSlice';
 import newsReducer from '../features/newsSlice';
@@ -16,16 +16,16 @@ const networkMiddleware = createNetworkMiddleware();
 // Separate persist configurations
 const newsPersistConfig = {
   key: 'news',
-  storage: storage,
+  storage: AsyncStorage,
 };
 
 const weatherPersistConfig = {
   key: 'weather',
-  storage: storage,
+  storage: AsyncStorage,
 };
 const themePersistConfig = {
   key: 'theme',
-  storage: storage,
+  storage: AsyncStorage,
 };
 
 // Persisted reducers

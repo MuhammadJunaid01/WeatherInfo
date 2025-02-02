@@ -2,10 +2,10 @@
 // TabNavigator.tsx
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {HomeIcon, NewsIcon} from '../assets/icons';
+import {HomeIcon, NewsIcon, WeatherIcon} from '../assets/icons';
 import {COLORS, moderateVerticalScale, scale} from '../config/constants';
 import {TabParamList} from '../lib/types';
-import {HomeScreen, NewsScreen} from '../screens';
+import {HomeScreen, NewsScreen, WeatherInfoScreen} from '../screens';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
@@ -45,6 +45,20 @@ const TabNavigator = () => (
         tabBarIcon: ({focused}) => {
           return (
             <NewsIcon size={40} fill={focused ? COLORS.primary : '#6b7280'} />
+          );
+        },
+      }}
+    />
+    <Tab.Screen
+      name="Weather"
+      component={WeatherInfoScreen}
+      options={{
+        tabBarIcon: ({focused}) => {
+          return (
+            <WeatherIcon
+              size={40}
+              fill={focused ? COLORS.primary : '#6b7280'}
+            />
           );
         },
       }}

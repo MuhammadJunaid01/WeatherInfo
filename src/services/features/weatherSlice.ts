@@ -1,35 +1,29 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {WeatherAPIResponse} from '../../lib';
 
-// Define the initial state structure
 interface WeatherState {
-  forecast: any; // Weather forecast data
-  loading: boolean; // Loading state
-  error: string | null; // Error state
+  weather: WeatherAPIResponse | null;
+  status: string;
 }
 
 const initialState: WeatherState = {
-  forecast: null,
-  loading: false,
-  error: null,
+  weather: null,
+  status: 'idle', // 'loading', 'succeeded', 'failed'
 };
 
 const weatherSlice = createSlice({
   name: 'weather',
   initialState,
   reducers: {
-    setWeather: (state, action: PayloadAction<any>) => {
-      state.forecast = action.payload;
+    setWeather(state, action: PayloadAction<WeatherAPIResponse>) {
+      state.weather = action.payload;
+      state.status = 'succeeded';
     },
-    setWeatherLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-    },
-    setWeatherError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
+    setWeatherStatus(state, action: PayloadAction<string>) {
+      state.status = action.payload;
     },
   },
 });
 
-export const {setWeather, setWeatherLoading, setWeatherError} =
-  weatherSlice.actions;
-
+export const {setWeather, setWeatherStatus} = weatherSlice.actions;
 export default weatherSlice.reducer;

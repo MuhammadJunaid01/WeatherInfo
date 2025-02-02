@@ -1,3 +1,4 @@
+import {showToast} from '../../lib';
 import {IGenericNewsResponse, INewsArticle} from '../../lib/shared.interface';
 import {setNews} from '../features/newsSlice';
 import {RootState} from '../store';
@@ -32,7 +33,7 @@ const newsApiSlice = apiSlice.injectEndpoints({
               articles: offlineData || [],
               totalResults: totalResults || 0,
               status: status || 'offline',
-            } as unknown as IGenericNewsResponse<INewsArticle>,
+            },
           };
         }
 
@@ -58,10 +59,7 @@ const newsApiSlice = apiSlice.injectEndpoints({
           return {error};
         }
       },
-      async onQueryStarted(
-        {query, page, pageSize},
-        {dispatch, queryFulfilled},
-      ) {
+      async onQueryStarted({}, {dispatch, queryFulfilled}) {
         try {
           const {data} = await queryFulfilled;
 
@@ -74,10 +72,10 @@ const newsApiSlice = apiSlice.injectEndpoints({
               }),
             );
           } else {
-            console.error('Expected data.articles to be an array');
+            showToast('Expected data.articles to be an array');
           }
-        } catch (error) {
-          console.error('Error in onQueryStarted:', error);
+        } catch (error: any) {
+          showToast(error?.message || 'Unexpected Error!');
         }
       },
     }),

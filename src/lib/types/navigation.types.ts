@@ -8,6 +8,7 @@ export type RootStackParamList = {
 export type TabParamList = {
   Home: undefined;
   News: undefined;
+  Weather: undefined;
 };
 
 export type DrawerParamList = {
