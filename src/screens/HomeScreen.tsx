@@ -1,27 +1,38 @@
 import React from 'react';
-import {ScrollView, StatusBar, Text, View} from 'react-native';
+import {Button, StatusBar, View} from 'react-native';
 import tw from '../../tailwind';
-import {Loader} from '../components';
-import NewsArticleCard from '../components/shared/NewsArticleCard';
-import {useGetNewsQuery} from '../services/apis/newApiSlice';
+import {ThemedText} from '../components';
+import {getCurrentUser} from '../hooks/useAuth';
+import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
+import {setTheme} from '../services/features/themeSlice';
 
 const HomeScreen = () => {
-  const {data, error, isLoading} = useGetNewsQuery('');
-  console.log('data news ', data?.articles);
-  // console.log('error', error);
-  if (isLoading) {
-    return <Loader size={'large'} />;
-  }
+  const {theme} = useAppSelector(state => state.theme);
+  const dispatch = useAppDispatch();
+  const user = getCurrentUser();
+  console.log('user', user);
   return (
-    <View style={tw` flex-1 bg-white`}>
+    <View style={tw` flex-1 bg-white p-3 gap-y-3`}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'white'} />
-      <ScrollView contentContainerStyle={tw` flex-grow`}>
-        <View style={tw` flex-1`}>
-          {data?.articles?.map((article, i) => {
-            return <NewsArticleCard article={article} key={i} />;
-          })}
-        </View>
-      </ScrollView>
+      <ThemedText size="h1">Home {theme}</ThemedText>
+      <Button
+        title="Dark"
+        onPress={() => {
+          dispatch(setTheme('dark'));
+        }}
+      />
+      <Button
+        title="Light"
+        onPress={() => {
+          dispatch(setTheme('light'));
+        }}
+      />
+      <Button
+        title="System"
+        onPress={() => {
+          dispatch(setTheme('system'));
+        }}
+      />
     </View>
   );
 };

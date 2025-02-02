@@ -1,6 +1,7 @@
 // types.ts
 export type RootStackParamList = {
   Drawer: undefined;
+  Tab: undefined;
 };
 
 export type TabParamList = {
@@ -11,4 +12,5 @@ export type TabParamList = {
 export type DrawerParamList = {
   Main: undefined; // Contains Tabs
   About: undefined;
+  Notification: undefined;
 };

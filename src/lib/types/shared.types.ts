@@ -1,1 +1,1 @@
-export type IT = string;
+export type Theme = 'light' | 'dark' | 'system';

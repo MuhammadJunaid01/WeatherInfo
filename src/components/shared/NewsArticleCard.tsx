@@ -1,13 +1,20 @@
 import React from 'react';
-import {Image, Linking, Text, TouchableOpacity, View} from 'react-native';
+import {Linking, Text, TouchableOpacity, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import tw from 'twrnc';
+import {screenHeight} from '../../config/constants';
 import {INewsArticle} from '../../lib/shared.interface';
+import ThemedText from './ThemedText';
 
 interface NewsArticleCardProps {
   article: INewsArticle;
+  item_height?: number;
 }
 
-const NewsArticleCard: React.FC<NewsArticleCardProps> = ({article}) => {
+const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
+  article,
+  item_height = screenHeight * 0.47,
+}) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const months = [
@@ -37,31 +44,42 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({article}) => {
   };
 
   return (
-    <View style={tw`bg-white rounded-lg shadow m-1 mb-4 overflow-hidden`}>
+    <View
+      style={tw`bg-white rounded-lg shadow m-1 mb-4  h-[${item_height}px] overflow-hidden`}>
       <View style={tw`relative`}>
-        <Image
-          source={{uri: article?.urlToImage}}
+        <FastImage
+          source={{
+            uri: article?.urlToImage,
+            priority: FastImage.priority.high,
+          }}
           style={tw`w-full h-48`}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode.cover}
         />
         <View style={tw`absolute top-4 left-4 bg-blue-600 px-2 py-1 rounded`}>
-          <Text style={tw`text-white text-sm font-medium`}>
+          <ThemedText
+            size="h4"
+            color="text-white"
+            style={tw` text-sm font-medium`}>
             {article?.source?.name}
-          </Text>
+          </ThemedText>
         </View>
       </View>
 
       <View style={tw`p-4`}>
         <View style={tw`mb-2`}>
-          <Text style={tw`text-xl font-bold text-gray-900 mb-2`}>
+          <ThemedText
+            numberOfLines={1}
+            size="h3"
+            color="text-gray-700"
+            style={tw` mb-1`}>
             {article?.title}
-          </Text>
-          <Text style={tw`text-base text-gray-600`} numberOfLines={3}>
+          </ThemedText>
+          <ThemedText size="h4" style={tw` `} numberOfLines={3}>
             {article?.description}
-          </Text>
+          </ThemedText>
         </View>
 
-        <View style={tw`mt-4 flex-row justify-between items-center`}>
+        <View style={tw`mt-1 flex-row justify-between items-center`}>
           <View style={tw`flex-row items-center`}>
             <View
               style={tw`h-8 w-8 rounded-full bg-gray-200 mr-2 items-center justify-center`}>
@@ -70,9 +88,13 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({article}) => {
               </Text>
             </View>
             <View>
-              <Text style={tw`text-sm font-medium text-gray-900`}>
+              <ThemedText
+                numberOfLines={1}
+                size="h5"
+                color="text-gray-800"
+                style={tw` `}>
                 {article?.author || 'Unknown Author'}
-              </Text>
+              </ThemedText>
               <Text style={tw`text-sm text-gray-500`}>
                 {formatDate(article?.publishedAt)}
               </Text>
@@ -80,11 +102,12 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({article}) => {
           </View>
 
           <TouchableOpacity
+            hitSlop={{top: 30, right: 30, bottom: 30, left: 30}}
             onPress={handlePress}
             style={tw`flex-row items-center`}>
-            <Text style={tw`text-sm font-medium text-blue-600 mr-1`}>
+            <ThemedText size="h4" color="text-blue-600" style={tw`  mr-1`}>
               Read More
-            </Text>
+            </ThemedText>
             {/* You can add an icon here using a React Native icon library if desired */}
           </TouchableOpacity>
         </View>

@@ -25,7 +25,7 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
 
   const handleNotificationPress = () => {
     // Handle notification press
-    navigation.navigate('Notifications');
+    navigation.navigate('Notification');
   };
 
   const handleProfilePress = () => {

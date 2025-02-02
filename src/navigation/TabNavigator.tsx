@@ -1,15 +1,54 @@
+/* eslint-disable react/no-unstable-nested-components */
 // TabNavigator.tsx
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
+import {HomeIcon, NewsIcon} from '../assets/icons';
+import {COLORS, moderateVerticalScale, scale} from '../config/constants';
 import {TabParamList} from '../lib/types';
 import {HomeScreen, NewsScreen} from '../screens';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator = () => (
-  <Tab.Navigator screenOptions={{headerShown: false}}>
-    <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen name="News" component={NewsScreen} />
+  <Tab.Navigator
+    screenOptions={{
+      headerShown: false,
+      tabBarActiveTintColor: `${COLORS.primary}`,
+      tabBarLabelStyle: {
+        fontSize: scale(11), // Adjust font size
+        fontWeight: '600', // Optional: Make text bold
+        paddingTop: 3,
+      },
+      tabBarStyle: {
+        height: moderateVerticalScale(55),
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: scale(10),
+        paddingBottom: scale(10),
+      },
+    }}>
+    <Tab.Screen
+      name="Home"
+      options={{
+        tabBarIcon: ({focused}) => {
+          return (
+            <HomeIcon size={40} fill={focused ? COLORS.primary : '#6b7280'} />
+          );
+        },
+      }}
+      component={HomeScreen}
+    />
+    <Tab.Screen
+      name="News"
+      component={NewsScreen}
+      options={{
+        tabBarIcon: ({focused}) => {
+          return (
+            <NewsIcon size={40} fill={focused ? COLORS.primary : '#6b7280'} />
+          );
+        },
+      }}
+    />
   </Tab.Navigator>
 );
 

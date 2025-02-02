@@ -7,8 +7,9 @@ import {
 import {persistReducer, persistStore} from 'redux-persist';
 import {storage} from '../../lib/db';
 import {apiSlice} from '../apis/apiSlice'; // Adjust the path as necessary
-import newsReducer from '../slices/newsSlice';
-import weatherReducer from '../slices/weatherSlice';
+import newsReducer from '../features/newsSlice';
+import themeReducer from '../features/themeSlice';
+import weatherReducer from '../features/weatherSlice';
 const networkMiddleware = createNetworkMiddleware();
 
 // Separate persist configurations
@@ -21,6 +22,10 @@ const weatherPersistConfig = {
   key: 'weather',
   storage: storage,
 };
+const themePersistConfig = {
+  key: 'theme',
+  storage: storage,
+};
 
 // Persisted reducers
 const persistedNewsReducer = persistReducer(newsPersistConfig, newsReducer);
@@ -28,11 +33,13 @@ const persistedWeatherReducer = persistReducer(
   weatherPersistConfig,
   weatherReducer,
 );
+const persistedThemeReducer = persistReducer(themePersistConfig, themeReducer);
 
 // Combined reducer
 const rootReducer = combineReducers({
   news: persistedNewsReducer,
   weather: persistedWeatherReducer,
+  theme: persistedThemeReducer,
   network,
   [apiSlice.reducerPath]: apiSlice.reducer, // Keep API slice for dynamic fetching
 });
