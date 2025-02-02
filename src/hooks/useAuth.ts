@@ -1,5 +1,7 @@
 import auth from '@react-native-firebase/auth';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {Dispatch} from 'redux';
+import {RootStackParamList} from '../lib';
 import {
   removeUser,
   setError,
@@ -18,6 +20,7 @@ export const signUp = async (
   email: string,
   password: string,
   dispatch: Dispatch,
+  navigation: StackNavigationProp<RootStackParamList>,
 ): Promise<void> => {
   try {
     dispatch(setLoading(true)); // Set loading to true before starting the signup
@@ -35,6 +38,7 @@ export const signUp = async (
         photoURL: user.photoURL,
       }),
     ); // Set user data in Redux store
+    navigation.navigate('Drawer');
   } catch (error: any) {
     dispatch(setError(error.message)); // Handle error if signup fails
   }
@@ -44,6 +48,7 @@ export const signIn = async (
   email: string,
   password: string,
   dispatch: Dispatch,
+  navigation: StackNavigationProp<RootStackParamList>,
 ): Promise<void> => {
   try {
     dispatch(setLoading(true)); // Set loading to true before starting the login
@@ -61,6 +66,7 @@ export const signIn = async (
         photoURL: user.photoURL,
       }),
     ); // Set user data in Redux store
+    navigation.navigate('Drawer');
   } catch (error: any) {
     dispatch(setError(error.message)); // Handle error if login fails
   }

@@ -1,78 +1,86 @@
-import React, {memo, useCallback} from 'react';
-import {Text, TextProps} from 'react-native';
+import React, {memo, useMemo} from 'react';
+import {Text, TextProps, TextStyle} from 'react-native';
 import {scale} from 'react-native-size-matters';
-import tw from '../../../tailwind';
+import {COLORS} from '../../config/constants';
+import {useAppSelector} from '../../hooks/useReduxHooks';
 
-type SIze = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+type Size = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 interface IProps extends TextProps {
-  size: SIze;
-  color?: string;
+  size: Size;
+  color?: keyof typeof COLORS.light; // Restrict to keys in COLORS
 }
 
 const ThemedText: React.FC<IProps> = ({
   size: variant,
   children,
-  color = 'text-gray-500',
+  color = 'secondary', // Default to secondary text color
   style,
   ...rest
 }) => {
-  const textStyle = useCallback(() => {
-    let styleIn = {};
+  const {theme} = useAppSelector(state => state.theme); // Get the active theme
+
+  // Determine the active color scheme based on the theme
+  const themeColors = useMemo(() => {
+    return theme === 'dark' ? COLORS.dark : COLORS.light;
+  }, [theme]);
+
+  // Define text styles based on the size variant
+  const textStyle = useMemo(() => {
+    const baseStyle: TextStyle = {
+      color: themeColors[color], // Use theme color dynamically
+    };
+
     switch (variant) {
       case 'h1':
-        styleIn = {
+        return {
+          ...baseStyle,
           fontSize: scale(21),
-          fontWeight: 'bold' as 'bold',
+          fontWeight: 'bold' as TextStyle['fontWeight'],
         };
-        break;
       case 'h2':
-        styleIn = {
+        return {
+          ...baseStyle,
           fontSize: scale(17),
-          fontWeight: 'bold' as 'bold',
+          fontWeight: 'bold' as TextStyle['fontWeight'],
         };
-        break;
       case 'h3':
-        styleIn = {
+        return {
+          ...baseStyle,
           fontSize: scale(13),
-          fontWeight: '600' as '600',
+          fontWeight: '600' as TextStyle['fontWeight'],
         };
-        break;
       case 'h4':
-        styleIn = {
+        return {
+          ...baseStyle,
           fontSize: scale(12.5),
           lineHeight: 21,
-          fontWeight: '500' as '500',
+          fontWeight: '500' as TextStyle['fontWeight'],
         };
-        break;
       case 'h5':
-        styleIn = {
+        return {
+          ...baseStyle,
           fontSize: scale(11),
-          fontWeight: '400' as '400',
+          fontWeight: '400' as TextStyle['fontWeight'],
         };
-        break;
       case 'h6':
-        styleIn = {
+        return {
+          ...baseStyle,
           fontSize: scale(9),
-          fontWeight: '300' as '300',
+          fontWeight: '300' as TextStyle['fontWeight'],
         };
-        break;
       default:
-        styleIn = {};
-        break;
+        return baseStyle;
     }
+  }, [variant, themeColors, color]);
 
-    // Apply dynamic text color here
-    return {
-      ...styleIn,
-      ...(typeof style === 'object' ? style : {}),
-    };
-  }, [style, variant]);
-
-  const combinedStyle = textStyle();
+  // Combine text styles with additional styles
+  const combinedStyle = useMemo(() => {
+    return [textStyle, style];
+  }, [textStyle, style]);
 
   return (
-    <Text style={[combinedStyle, tw`${color}`]} {...rest}>
+    <Text style={combinedStyle} {...rest}>
       {children}
     </Text>
   );

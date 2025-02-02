@@ -3,6 +3,7 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import React from 'react';
 import {CustomDrawerHeader} from '../components';
+import {getCurrentUser} from '../hooks/useAuth';
 import {useAppSelector} from '../hooks/useReduxHooks';
 import {DrawerParamList} from '../lib/types';
 import {NotificationScreen} from '../screens';
@@ -12,6 +13,7 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 
 const DrawerNavigator = () => {
   const {user} = useAppSelector(state => state.auth);
+
   return (
     <Drawer.Navigator
       screenOptions={{

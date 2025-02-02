@@ -30,11 +30,6 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
     navigation.navigate('Notification');
   };
 
-  const handleProfilePress = () => {
-    // Handle profile press
-    navigation.navigate('Profile');
-  };
-
   return (
     <View
       style={tw`bg-white h-16 flex-row items-center justify-between px-4 shadow-sm`}>
@@ -74,28 +69,23 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity
-          onPress={handleProfilePress}
-          style={tw`relative`}
-          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-          {user && user?.photoURL ? (
-            <Image
-              source={{uri: user.photoURL}}
-              style={tw`h-8 w-8 rounded-full`}
-              resizeMode="cover"
-            />
-          ) : (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('SignUp');
-              }}
-              style={tw`h-8 w-auto px-4 rounded-full bg-[${COLORS.primary}] items-center justify-center`}>
-              <ThemedText size="h4" color="text-white">
-                SignUp
-              </ThemedText>
-            </TouchableOpacity>
-          )}
-        </TouchableOpacity>
+        {user && user?.photoURL ? (
+          <Image
+            source={{uri: user.photoURL}}
+            style={tw`h-8 w-8 rounded-full`}
+            resizeMode="cover"
+          />
+        ) : !user ? (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('SignUp');
+            }}
+            style={tw`h-8 w-auto px-4 rounded-full bg-[${COLORS.primary}] items-center justify-center`}>
+            <ThemedText size="h4" color="text-white">
+              SignUp
+            </ThemedText>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );

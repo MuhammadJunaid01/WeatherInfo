@@ -1,3 +1,4 @@
+import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
@@ -13,7 +14,7 @@ import {moderateScale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import tw from 'twrnc';
 import {z} from 'zod';
-import {authSchema} from '../../lib';
+import {authSchema, RootStackParamList} from '../../lib';
 import ThemedText from './ThemedText';
 
 // Define validation schema using Zod
@@ -22,9 +23,10 @@ type AuthFormData = z.infer<typeof authSchema>;
 
 interface IAuthProps {
   onPressAction?: (email: string, password: string) => void;
-  navigation?: any;
+  navigation?: StackNavigationProp<RootStackParamList>;
   isLoading?: boolean;
   errMessage?: string | null;
+  isSignUp: boolean;
 }
 
 const AuthForm: React.FC<IAuthProps> = ({
@@ -32,6 +34,7 @@ const AuthForm: React.FC<IAuthProps> = ({
   navigation,
   isLoading,
   errMessage,
+  isSignUp,
 }) => {
   const [formData, setFormData] = useState<AuthFormData>({
     email: '',
@@ -161,18 +164,20 @@ const AuthForm: React.FC<IAuthProps> = ({
             </View>
 
             {/* Password Requirements */}
-            <View style={tw`mb-6`}>
-              <Text style={tw`text-gray-500 text-sm`}>Password must:</Text>
-              <Text style={tw`text-gray-500 text-sm`}>
-                • Be at least 6 characters long
-              </Text>
-              <Text style={tw`text-gray-500 text-sm`}>
-                • Contain at least one uppercase letter
-              </Text>
-              <Text style={tw`text-gray-500 text-sm`}>
-                • Contain at least one number
-              </Text>
-            </View>
+            {isSignUp && (
+              <View style={tw`mb-6`}>
+                <Text style={tw`text-gray-500 text-sm`}>Password must:</Text>
+                <Text style={tw`text-gray-500 text-sm`}>
+                  • Be at least 6 characters long
+                </Text>
+                <Text style={tw`text-gray-500 text-sm`}>
+                  • Contain at least one uppercase letter
+                </Text>
+                <Text style={tw`text-gray-500 text-sm`}>
+                  • Contain at least one number
+                </Text>
+              </View>
+            )}
             {errMessage && (
               <ThemedText size="h4" color="text-red-400" style={tw`  my-1`}>
                 {errMessage}
@@ -197,9 +202,18 @@ const AuthForm: React.FC<IAuthProps> = ({
 
             {/* Login Link */}
             <View style={tw`flex-row justify-center`}>
-              <Text style={tw`text-gray-600`}>Already have an account? </Text>
-              <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-                <Text style={tw`text-blue-500 font-semibold`}>Login</Text>
+              <Text style={tw`text-gray-600`}>
+                {isSignUp
+                  ? 'Already have an account?'
+                  : 'Don’t have an account yet?'}
+              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation?.navigate(isSignUp ? 'SignIn' : 'SignUp')
+                }>
+                <Text style={tw`text-blue-500 font-semibold`}>
+                  {isSignUp ? 'SignIn' : 'SignUp'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
