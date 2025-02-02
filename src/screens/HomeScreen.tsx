@@ -1,20 +1,28 @@
-import React from 'react';
-import {Button, StatusBar, View} from 'react-native';
+import React, {useCallback} from 'react';
+import {StatusBar, View} from 'react-native';
 import tw from '../../tailwind';
-import {AuthForm, ThemedText} from '../components';
-import {getCurrentUser} from '../hooks/useAuth';
+import {AuthForm} from '../components';
+import {signUp} from '../hooks/useAuth';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
-import {setTheme} from '../services/features/themeSlice';
 
 const HomeScreen = () => {
-  const {theme} = useAppSelector(state => state.theme);
+  const {error, loading, user} = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
-  const user = getCurrentUser();
+  const onPressSignUp = useCallback(
+    async (email: string, password: string) => {
+      await signUp(email, password, dispatch);
+    },
+    [dispatch],
+  );
   console.log('user', user);
   return (
     <View style={tw` flex-1 bg-white p-3 `}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'white'} />
-      <AuthForm />
+      <AuthForm
+        onPressAction={onPressSignUp}
+        isLoading={loading}
+        errMessage={error}
+      />
     </View>
   );
 };

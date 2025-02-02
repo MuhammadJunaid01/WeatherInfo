@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -27,12 +28,19 @@ const authSchema = z.object({
 
 type AuthFormData = z.infer<typeof authSchema>;
 
-interface SignUpScreenProps {
+interface IAuthProps {
   onPressAction?: (email: string, password: string) => void;
   navigation?: any;
+  isLoading?: boolean;
+  errMessage?: string | null;
 }
 
-const AuthForm: React.FC<SignUpScreenProps> = ({onPressAction, navigation}) => {
+const AuthForm: React.FC<IAuthProps> = ({
+  onPressAction,
+  navigation,
+  isLoading,
+  errMessage,
+}) => {
   const [formData, setFormData] = useState<AuthFormData>({
     email: '',
     password: '',
@@ -117,9 +125,9 @@ const AuthForm: React.FC<SignUpScreenProps> = ({onPressAction, navigation}) => {
                 />
               </View>
               {errors.email ? (
-                <Text style={tw`text-red-500 text-sm mt-1`}>
+                <ThemedText size="h4" color="text-red-50" style={tw`0  mt-1`}>
                   {errors.email}
-                </Text>
+                </ThemedText>
               ) : null}
             </View>
 
@@ -173,14 +181,26 @@ const AuthForm: React.FC<SignUpScreenProps> = ({onPressAction, navigation}) => {
                 • Contain at least one number
               </Text>
             </View>
-
+            {errMessage && (
+              <ThemedText size="h4" color="text-red-400" style={tw`  my-1`}>
+                {errMessage}
+              </ThemedText>
+            )}
             {/* Sign Up Button */}
             <TouchableOpacity
+              disabled={isLoading}
               onPress={handleSignUp}
               style={tw`bg-blue-500 rounded-lg py-4 mb-4`}>
-              <Text style={tw`text-white text-center font-semibold text-lg`}>
-                Sign Up
-              </Text>
+              {isLoading ? (
+                <ActivityIndicator color={'white'} />
+              ) : (
+                <ThemedText
+                  size="h2"
+                  color="text-white"
+                  style={tw` text-center`}>
+                  Sign Up
+                </ThemedText>
+              )}
             </TouchableOpacity>
 
             {/* Login Link */}
