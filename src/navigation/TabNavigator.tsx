@@ -7,7 +7,7 @@ import {HomeScreen, NewsScreen} from '../screens';
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator = () => (
-  <Tab.Navigator>
+  <Tab.Navigator screenOptions={{headerShown: false}}>
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="News" component={NewsScreen} />
   </Tab.Navigator>

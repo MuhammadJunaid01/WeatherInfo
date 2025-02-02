@@ -5,7 +5,7 @@ import DrawerNavigator from './DrawerNavigator';
 const Stack = createStackNavigator<RootStackParamList>();
 const RootNavigation = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen
         name="Drawer"
         component={DrawerNavigator}

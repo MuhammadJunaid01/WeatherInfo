@@ -1,3 +1,5 @@
+import CustomDrawerHeader from './CustomDrawerHeader';
 import Loader from './Loader';
+import ThemedText from './ThemedText';
 
-export {Loader};
+export {CustomDrawerHeader, Loader, ThemedText};
