@@ -6,20 +6,23 @@
  */
 
 import React from 'react';
-import {View} from 'react-native';
 import 'react-native-gesture-handler';
 
+import {NetworkProvider} from 'react-native-offline';
 import {Provider} from 'react-redux';
-import SignUp from './src/components/SignUp';
-import store from './src/services/store';
+import {PersistGate} from 'redux-persist/integration/react';
+import AppNavigator from './src/navigation/AppNavigator';
+import store, {persistor} from './src/services/store';
 
 function App(): React.JSX.Element {
   return (
-    <View style={{flex: 1}}>
-      <Provider store={store}>
-        <SignUp />
-      </Provider>
-    </View>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NetworkProvider>
+          <AppNavigator />
+        </NetworkProvider>
+      </PersistGate>
+    </Provider>
   );
 }
 

@@ -1,4 +1,3 @@
-import NetInfo from '@react-native-community/netinfo';
 import {
   BaseQueryFn,
   createApi,
@@ -17,16 +16,6 @@ const baseQueryWithNetworkCheck: BaseQueryFn = async (
   api,
   extraOptions,
 ) => {
-  // Check network availability
-  const networkState = await NetInfo.fetch();
-  if (!networkState.isConnected) {
-    // Return an error if the network is not available
-    return {
-      error: {status: 'NETWORK_ERROR', message: 'Network unavailable'},
-    };
-  }
-
-  // Proceed with the API call if the network is available
   const result = await baseQuery(args, api, extraOptions);
 
   return result;
