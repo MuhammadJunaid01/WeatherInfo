@@ -125,7 +125,7 @@ const AuthForm: React.FC<IAuthProps> = ({
                 />
               </View>
               {errors.email ? (
-                <ThemedText size="h4" color="text-red-50" style={tw`0  mt-1`}>
+                <ThemedText size="h4" color="text-red-400" style={tw`  my-1`}>
                   {errors.email}
                 </ThemedText>
               ) : null}
@@ -162,9 +162,9 @@ const AuthForm: React.FC<IAuthProps> = ({
                 </TouchableOpacity>
               </View>
               {errors.password ? (
-                <Text style={tw`text-red-500 text-sm mt-1`}>
+                <ThemedText size="h4" color="text-red-400" style={tw`  my-1`}>
                   {errors.password}
-                </Text>
+                </ThemedText>
               ) : null}
             </View>
 
