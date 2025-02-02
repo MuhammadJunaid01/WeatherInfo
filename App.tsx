@@ -6,35 +6,21 @@
  */
 
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
+import 'react-native-gesture-handler';
 
+import {Provider} from 'react-redux';
 import SignUp from './src/components/SignUp';
+import store from './src/services/store';
 
 function App(): React.JSX.Element {
   return (
     <View style={{flex: 1}}>
-      <SignUp />
+      <Provider store={store}>
+        <SignUp />
+      </Provider>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
