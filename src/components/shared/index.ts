@@ -4,6 +4,7 @@ import Loader from './Loader';
 import NewsArticleCard from './NewsArticleCard';
 import ThemedText from './ThemedText';
 import ThemedView from './ThemedView';
+import WeatherInfoCard from './WeatherInfoCard';
 
 export {
   AuthForm,
@@ -12,4 +13,5 @@ export {
   NewsArticleCard,
   ThemedText,
   ThemedView,
+  WeatherInfoCard,
 };

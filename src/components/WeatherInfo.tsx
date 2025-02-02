@@ -1,44 +1,13 @@
-import Geolocation from '@react-native-community/geolocation';
-import React, {useEffect, useState} from 'react';
-import {Button, Text, View} from 'react-native';
-
-import tw from 'twrnc';
-import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
-import {useGetWeatherQuery} from '../services/apis/weatherApiSlice';
-import {setWeatherStatus} from '../services/features/weatherSlice';
-
-const WeatherInfo = () => {
-  const dispatch = useAppDispatch();
-  const [location, setLocation] = useState<{lat: number; lon: number} | null>(
-    null,
-  );
-
-  // Accessing weather data from Redux
-  const weatherState = useAppSelector(state => state.weather);
-  const {data, error, isLoading, refetch} = useGetWeatherQuery(
-    location || {lat: 0, lon: 0},
-    {skip: !location},
-  );
-  console.log('data', data);
-  // Get user location on component mount
-  useEffect(() => {
-    dispatch(setWeatherStatus('loading'));
-
-    Geolocation.getCurrentPosition(
-      position => {
-        setLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-        dispatch(setWeatherStatus('idle'));
-      },
-      error => {
-        console.error('Geolocation error:', error);
-        dispatch(setWeatherStatus('failed'));
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
-  }, [dispatch]);
+import React from 'react';
+import {ScrollView, Text, View} from 'react-native';
+import tw from '../../tailwind';
+import {WeatherAPIResponse} from '../lib';
+import {WeatherInfoCard} from './shared';
+interface IProps {
+  data?: WeatherAPIResponse;
+}
+const WeatherInfo: React.FC<IProps> = ({data}) => {
+  console.log(data);
   const kelvinToCelsius = (kelvin?: number) => {
     if (!kelvin) {
       return 'N/A';
@@ -58,15 +27,90 @@ const WeatherInfo = () => {
     });
   };
   return (
-    <View style={tw`flex-1 justify-center items-center p-4`}>
-      {isLoading && <Text style={tw`text-lg`}>Loading...</Text>}
-      {error && (
-        <Text style={tw`text-red-500`}>
-          Error: Unable to fetch weather data
-        </Text>
-      )}
+    <View style={tw` flex-1  bg-transparent`}>
+      <ScrollView style={tw`flex-1 bg-white`}>
+        {/* Header Section */}
+        <View style={tw`p-6 bg-blue-500`}>
+          {data && (
+            <Text style={tw`text-white text-3xl font-bold`}>
+              {data.name}, {data.sys?.country}
+            </Text>
+          )}
+          <Text style={tw`text-white text-5xl font-bold my-4`}>
+            {kelvinToCelsius(data?.main?.temp)}
+          </Text>
+          <Text style={tw`text-white text-xl`}>
+            {data && data.weather?.[0]?.description?.charAt(0).toUpperCase()}
+            {data && data.weather?.[0]?.description?.slice(1)}
+          </Text>
+        </View>
 
-      <Button title="Refresh" onPress={refetch} />
+        {/* Main Weather Info */}
+        <View style={tw`p-4`}>
+          <View style={tw`flex-row flex-wrap justify-between`}>
+            <WeatherInfoCard
+              label="Feels Like"
+              value={kelvinToCelsius(data?.main?.feels_like)}
+            />
+            <WeatherInfoCard
+              label="Min Temp"
+              value={kelvinToCelsius(data?.main?.temp_min)}
+            />
+            <WeatherInfoCard
+              label="Max Temp"
+              value={kelvinToCelsius(data?.main?.temp_max)}
+            />
+          </View>
+
+          {/* Additional Weather Details */}
+          <View style={tw`mt-4`}>
+            <Text style={tw`text-xl font-semibold mb-2 px-2`}>Details</Text>
+            <View style={tw`flex-row flex-wrap justify-between`}>
+              <WeatherInfoCard
+                label="Humidity"
+                value={`${data?.main?.humidity ?? 'N/A'}%`}
+              />
+              <WeatherInfoCard
+                label="Wind Speed"
+                value={`${data?.wind?.speed ?? 'N/A'} m/s`}
+              />
+              <WeatherInfoCard
+                label="Pressure"
+                value={`${data?.main?.pressure ?? 'N/A'} hPa`}
+              />
+              <WeatherInfoCard
+                label="Visibility"
+                value={`${(data?.visibility ?? 0) / 1000} km`}
+              />
+            </View>
+          </View>
+
+          {/* Sun Times */}
+          <View style={tw`mt-4`}>
+            <Text style={tw`text-xl font-semibold mb-2 px-2`}>Sun Times</Text>
+            <View style={tw`flex-row justify-between`}>
+              <WeatherInfoCard
+                label="Sunrise"
+                value={formatTime(data?.sys?.sunrise)}
+              />
+              <WeatherInfoCard
+                label="Sunset"
+                value={formatTime(data?.sys?.sunset)}
+              />
+            </View>
+          </View>
+
+          {/* Last Updated */}
+          <View style={tw`mt-4 items-center`}>
+            <Text style={tw`text-gray-500`}>
+              Last Updated:
+              {new Date(
+                data?.dt ? data.dt * 1000 : Date.now(),
+              ).toLocaleString()}
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
