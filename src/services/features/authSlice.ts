@@ -1,17 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-
-export interface FirebaseUser {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-}
-
-interface AuthState {
-  user: FirebaseUser | null;
-  loading: boolean;
-  error: string | null;
-}
+import {AuthState, FirebaseUser} from '../../lib/shared.interface';
 
 const initialState: AuthState = {
   user: null,

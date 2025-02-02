@@ -18,3 +18,15 @@ export interface IGenericNewsResponse<T> {
   status?: string;
   totalResults: number;
 }
+export interface FirebaseUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+}
+
+export interface AuthState {
+  user: FirebaseUser | null;
+  loading: boolean;
+  error: string | null;
+}

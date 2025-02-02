@@ -1,15 +1,16 @@
 import {DrawerHeaderProps} from '@react-navigation/drawer';
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import tw from 'twrnc';
 import {MenuIcon, NotificationIcon} from '../../assets/icons';
+import {FirebaseUser} from '../../lib/shared.interface';
+import ThemedText from './ThemedText';
 
 interface CustomDrawerHeaderProps extends DrawerHeaderProps {
   title?: string;
   showNotification?: boolean;
   notificationCount?: number;
-  profileImage?: string;
+  user?: FirebaseUser | null;
 }
 
 const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
@@ -17,7 +18,7 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
   title = 'Home',
   showNotification = true,
   notificationCount = 0,
-  profileImage,
+  user,
 }) => {
   const handleMenuPress = () => {
     navigation.openDrawer();
@@ -76,17 +77,17 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
           onPress={handleProfilePress}
           style={tw`relative`}
           hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-          {profileImage ? (
+          {user && user?.photoURL ? (
             <Image
-              source={{uri: profileImage}}
+              source={{uri: user.photoURL}}
               style={tw`h-8 w-8 rounded-full`}
               resizeMode="cover"
             />
           ) : (
-            <View
+            <TouchableOpacity
               style={tw`h-8 w-8 rounded-full bg-gray-200 items-center justify-center`}>
-              <Icon name="person" size={20} style={tw`text-gray-600`} />
-            </View>
+              <ThemedText size="h4">SignIn</ThemedText>
+            </TouchableOpacity>
           )}
         </TouchableOpacity>
       </View>
