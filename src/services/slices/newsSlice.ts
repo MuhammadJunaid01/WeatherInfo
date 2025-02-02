@@ -1,8 +1,9 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {INewsArticle} from '../../lib/shared.interface';
 
 // Define the initial state structure
 interface NewsState {
-  articles: any[]; // The news articles
+  articles: INewsArticle[]; // The news articles
 }
 
 const initialState: NewsState = {
@@ -13,7 +14,7 @@ const newsSlice = createSlice({
   name: 'news',
   initialState,
   reducers: {
-    setNews: (state, action: PayloadAction<any[]>) => {
+    setNews: (state, action: PayloadAction<INewsArticle[]>) => {
       state.articles = action.payload;
     },
   },

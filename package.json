@@ -9,7 +9,7 @@
     "start": "react-native start",
     "test": "jest",
     "clean:install": "rmdir /s /q node_modules && del yarn.lock && npm install -g yarn && yarn install",
-    "clean:android": "cd android && ./gradlew clean"
+    "clean:android": "cd android && ./gradlew clean && cls"
   },
   "dependencies": {
     "@react-native-community/netinfo": "^11.4.1",

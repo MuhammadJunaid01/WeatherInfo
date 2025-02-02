@@ -3,13 +3,16 @@ import {Text, View} from 'react-native';
 import {useGetNewsQuery} from '../services/apis/newApiSlice';
 
 const HomeScreen = () => {
-  const {data, error} = useGetNewsQuery();
+  const {data, error, isLoading} = useGetNewsQuery('');
   console.log('data news ', data);
+  console.log('error', error);
+  if (isLoading) {
+  }
   return (
     <View>
-      <Text>HomeScreen</Text>
+      <Text>HomeScrenbmnben</Text>
     </View>
   );
 };
 
-export default HomeScreen;
+export default React.memo(HomeScreen);

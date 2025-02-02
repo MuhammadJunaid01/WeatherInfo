@@ -5,10 +5,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 
 const baseQuery: BaseQueryFn = fetchBaseQuery({
-  prepareHeaders: headers => {
-    return headers;
-  },
-  credentials: 'include',
+  //include credentials
 });
 
 const baseQueryWithNetworkCheck: BaseQueryFn = async (
@@ -17,7 +14,7 @@ const baseQueryWithNetworkCheck: BaseQueryFn = async (
   extraOptions,
 ) => {
   const result = await baseQuery(args, api, extraOptions);
-
+  console.log('BaseQuery Result:', result);
   return result;
 };
 
