@@ -7,6 +7,7 @@ import {
 import {persistReducer, persistStore} from 'redux-persist';
 import {storage} from '../../lib/db';
 import {apiSlice} from '../apis/apiSlice'; // Adjust the path as necessary
+import authReducer from '../features/authSlice';
 import newsReducer from '../features/newsSlice';
 import themeReducer from '../features/themeSlice';
 import weatherReducer from '../features/weatherSlice';
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
   news: persistedNewsReducer,
   weather: persistedWeatherReducer,
   theme: persistedThemeReducer,
+  auth: authReducer,
   network,
   [apiSlice.reducerPath]: apiSlice.reducer, // Keep API slice for dynamic fetching
 });

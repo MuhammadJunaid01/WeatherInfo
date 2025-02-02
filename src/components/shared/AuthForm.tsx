@@ -2,19 +2,20 @@ import React, {useState} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import {moderateScale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import tw from 'twrnc';
 import {z} from 'zod';
+import ThemedText from './ThemedText';
 
 // Define validation schema using Zod
-const signUpSchema = z.object({
+const authSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
   password: z
     .string()
@@ -24,33 +25,33 @@ const signUpSchema = z.object({
     .regex(/[0-9]/, 'Password must contain at least one number'),
 });
 
-type SignUpFormData = z.infer<typeof signUpSchema>;
+type AuthFormData = z.infer<typeof authSchema>;
 
 interface SignUpScreenProps {
-  onSignUp: (email: string, password: string) => void;
+  onPressAction?: (email: string, password: string) => void;
   navigation?: any;
 }
 
-const Auth: React.FC<SignUpScreenProps> = ({onSignUp, navigation}) => {
-  const [formData, setFormData] = useState<SignUpFormData>({
+const AuthForm: React.FC<SignUpScreenProps> = ({onPressAction, navigation}) => {
+  const [formData, setFormData] = useState<AuthFormData>({
     email: '',
     password: '',
   });
   const [errors, setErrors] = useState<{
-    [key in keyof SignUpFormData]?: string;
+    [key in keyof AuthFormData]?: string;
   }>({});
   const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = () => {
     try {
-      signUpSchema.parse(formData);
+      authSchema.parse(formData);
       setErrors({});
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const newErrors: {[key in keyof SignUpFormData]?: string} = {};
+        const newErrors: {[key in keyof AuthFormData]?: string} = {};
         error.errors.forEach(err => {
-          const field = err.path[0] as keyof SignUpFormData;
+          const field = err.path[0] as keyof AuthFormData;
           newErrors[field] = err.message;
         });
         setErrors(newErrors);
@@ -61,11 +62,11 @@ const Auth: React.FC<SignUpScreenProps> = ({onSignUp, navigation}) => {
 
   const handleSignUp = () => {
     if (validateForm()) {
-      onSignUp(formData.email, formData.password);
+      onPressAction?.(formData.email, formData.password);
     }
   };
 
-  const handleChange = (field: keyof SignUpFormData, value: string) => {
+  const handleChange = (field: keyof AuthFormData, value: string) => {
     setFormData(prev => ({...prev, [field]: value}));
     // Clear error when user starts typing
     if (errors[field]) {
@@ -78,27 +79,32 @@ const Auth: React.FC<SignUpScreenProps> = ({onSignUp, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-white`}>
+    <View style={tw`flex-1 bg-white`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={tw`flex-1`}>
         <ScrollView
           contentContainerStyle={tw`flex-grow justify-center`}
           keyboardShouldPersistTaps="handled">
-          <View style={tw`px-6`}>
+          <View style={tw`px-4`}>
             {/* Header */}
             <View style={tw`mb-8`}>
-              <Text style={tw`text-3xl font-bold text-gray-800 mb-2`}>
+              <ThemedText size="h1" color="text-gray-800" style={tw`  mb-1`}>
                 Create Account
-              </Text>
-              <Text style={tw`text-gray-500`}>Sign up to get started!</Text>
+              </ThemedText>
+              <ThemedText size="h5" style={tw``}>
+                Sign up to get started!
+              </ThemedText>
             </View>
 
             {/* Email Input */}
             <View style={tw`mb-4`}>
-              <Text style={tw`text-gray-700 mb-2 font-medium`}>Email</Text>
-              <View style={tw`relative`}>
-                <View style={tw`absolute top-3 left-3 z-10`}>
+              <ThemedText size="h4" color="text-gray-700" style={tw` mb-2 `}>
+                Email
+              </ThemedText>
+              <View style={tw`relative h-[${moderateScale(55)}px] `}>
+                <View
+                  style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
                   <Icon name="email" size={20} style={tw`text-gray-400`} />
                 </View>
                 <TextInput
@@ -107,7 +113,7 @@ const Auth: React.FC<SignUpScreenProps> = ({onSignUp, navigation}) => {
                   placeholder="Enter your email"
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  style={tw`bg-gray-50 rounded-lg px-10 py-3 text-gray-800`}
+                  style={tw`bg-gray-50 h-full rounded-lg px-10 py-3 text-gray-800`}
                 />
               </View>
               {errors.email ? (
@@ -119,9 +125,12 @@ const Auth: React.FC<SignUpScreenProps> = ({onSignUp, navigation}) => {
 
             {/* Password Input */}
             <View style={tw`mb-6`}>
-              <Text style={tw`text-gray-700 mb-2 font-medium`}>Password</Text>
-              <View style={tw`relative`}>
-                <View style={tw`absolute top-3 left-3 z-10`}>
+              <ThemedText size="h4" color="text-gray-700" style={tw` mb-2 `}>
+                Password
+              </ThemedText>
+              <View style={tw`relative h-[${moderateScale(55)}px] `}>
+                <View
+                  style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
                   <Icon name="lock" size={20} style={tw`text-gray-400`} />
                 </View>
                 <TextInput
@@ -129,11 +138,14 @@ const Auth: React.FC<SignUpScreenProps> = ({onSignUp, navigation}) => {
                   onChangeText={text => handleChange('password', text)}
                   placeholder="Enter your password"
                   secureTextEntry={!showPassword}
-                  style={tw`bg-gray-50 rounded-lg px-10 py-3 text-gray-800`}
+                  style={tw`bg-gray-50 h-full rounded-lg px-10 py-3 text-gray-800`}
                 />
                 <TouchableOpacity
+                  hitSlop={{right: 20, top: 20, left: 20, bottom: 20}}
                   onPress={togglePasswordVisibility}
-                  style={tw`absolute top-3 right-3 z-10`}>
+                  style={tw`absolute top-[${moderateScale(
+                    18,
+                  )}px] right-3 z-10`}>
                   <Icon
                     name={showPassword ? 'visibility-off' : 'visibility'}
                     size={20}
@@ -181,8 +193,8 @@ const Auth: React.FC<SignUpScreenProps> = ({onSignUp, navigation}) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 
-export default React.memo(Auth);
+export default React.memo(AuthForm);

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Path, Svg} from 'react-native-svg';
+import {G, Path, Svg} from 'react-native-svg';
 interface IProps {
   size: number;
   fill?: string;
@@ -84,6 +84,37 @@ export const NewsIcon: React.FC<IProps> = React.memo(
           fill={fill}
           d="M42.028 55.029L0 32.597v2.292l41.123 21.946a.956.956 0 0 0 .451.114c.354 0 .697-.2.873-.549a1.034 1.034 0 0 0-.419-1.371z"
         />
+      </Svg>
+    );
+  },
+);
+
+export const EmailIcon: React.FC<IProps> = React.memo(
+  ({size, fill = '#212121'}) => {
+    return (
+      <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <G id="style=linear">
+          <G id="email">
+            <Path
+              id="vector"
+              d="M17 20.5H7C4 20.5 2 19 2 15.5V8.5C2 5 4 3.5 7 3.5H17C20 3.5 22 5 22 8.5V15.5C22 19 20 20.5 17 20.5Z"
+              fill={fill} // Apply the fill color
+              stroke="#000000"
+              strokeWidth="1.5"
+              strokeMiterlimit="10"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <Path
+              id="vector_2"
+              d="M18.7698 7.7688L13.2228 12.0551C12.5025 12.6116 11.4973 12.6116 10.777 12.0551L5.22998 7.7688"
+              fill={fill} // Apply the fill color
+              stroke="#000000"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </G>
+        </G>
       </Svg>
     );
   },
