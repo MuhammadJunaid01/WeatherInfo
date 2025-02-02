@@ -13,18 +13,10 @@ import {moderateScale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import tw from 'twrnc';
 import {z} from 'zod';
+import {authSchema} from '../../lib';
 import ThemedText from './ThemedText';
 
 // Define validation schema using Zod
-const authSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  password: z
-    .string()
-    .min(1, 'Password is required')
-    .min(6, 'Password must be at least 6 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number'),
-});
 
 type AuthFormData = z.infer<typeof authSchema>;
 

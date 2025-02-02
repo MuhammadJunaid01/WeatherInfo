@@ -1,7 +1,8 @@
 // types.ts
 export type RootStackParamList = {
   Drawer: undefined;
-  Tab: undefined;
+  SignUp: undefined;
+  SignIn: undefined;
 };
 
 export type TabParamList = {

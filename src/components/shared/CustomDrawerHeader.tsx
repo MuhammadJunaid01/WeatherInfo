@@ -3,6 +3,7 @@ import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import tw from 'twrnc';
 import {MenuIcon, NotificationIcon} from '../../assets/icons';
+import {COLORS} from '../../config/constants';
 import {FirebaseUser} from '../../lib/shared.interface';
 import ThemedText from './ThemedText';
 
@@ -85,8 +86,13 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
             />
           ) : (
             <TouchableOpacity
-              style={tw`h-8 w-8 rounded-full bg-gray-200 items-center justify-center`}>
-              <ThemedText size="h4">SignIn</ThemedText>
+              onPress={() => {
+                navigation.navigate('SignUp');
+              }}
+              style={tw`h-8 w-auto px-4 rounded-full bg-[${COLORS.primary}] items-center justify-center`}>
+              <ThemedText size="h4" color="text-white">
+                SignUp
+              </ThemedText>
             </TouchableOpacity>
           )}
         </TouchableOpacity>

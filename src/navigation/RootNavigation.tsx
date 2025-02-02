@@ -2,8 +2,8 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import {RootStackParamList} from '../lib/types';
+import {SignInScreen, SignUpScreen} from '../screens';
 import DrawerNavigator from './DrawerNavigator';
-import TabNavigator from './TabNavigator';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -16,10 +16,16 @@ const RootNavigation = () => {
         component={DrawerNavigator}
         options={{headerShown: false}} // Ensure no header is shown for Drawer screen
       />
-
-      {/* You could add any other screens to this stack */}
-      {/* This will keep the TabNavigator always rendered */}
-      {/* <Stack.Screen name="Tab" component={TabNavigator} /> */}
+      <Stack.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={{headerShown: false, animation: 'slide_from_right'}} // Ensure no header is shown for Drawer screen
+      />
+      <Stack.Screen
+        name="SignIn"
+        component={SignInScreen}
+        options={{headerShown: false, animation: 'slide_from_right'}} // Ensure no header is shown for Drawer screen
+      />
     </Stack.Navigator>
   );
 };
