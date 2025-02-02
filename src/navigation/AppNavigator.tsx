@@ -4,7 +4,7 @@ import React from 'react';
 
 // Screens
 import {RootStackParamList} from '../lib/types';
-import HomeScreen from '../screens/HomeScreen';
+import {HomeScreen} from '../screens';
 
 // Create a Stack Navigator with typed param list
 const Stack = createStackNavigator<RootStackParamList>();
@@ -12,8 +12,12 @@ const Stack = createStackNavigator<RootStackParamList>();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator screenOptions={{}} initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          options={{headerShown: false}}
+          component={HomeScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,11 +1,13 @@
 import React from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, ActivityIndicatorProps, View} from 'react-native';
 import tw from '../../../tailwind';
-
-const Loader = () => {
+interface IProps extends ActivityIndicatorProps {
+  // size?: number | 'small' | 'large';
+}
+const Loader: React.FC<IProps> = ({...rest}) => {
   return (
     <View style={tw`  items-center justify-center`}>
-      <ActivityIndicator size={'small'} />
+      <ActivityIndicator {...rest} />
     </View>
   );
 };
