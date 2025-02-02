@@ -1,7 +1,7 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, {useEffect, useState} from 'react';
 import tw from '../../tailwind';
-import {ThemedView, WeatherInfo} from '../components';
+import {Loader, ThemedView, WeatherInfo} from '../components';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {useGetWeatherQuery} from '../services/apis/weatherApiSlice';
 import {setWeatherStatus} from '../services/features/weatherSlice';
@@ -38,7 +38,13 @@ const WeatherInfoScreen = () => {
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   }, [dispatch]);
-
+  if (isLoading) {
+    return (
+      <ThemedView style={tw` flex-1 items-center justify-center`}>
+        <Loader size={'large'} />
+      </ThemedView>
+    );
+  }
   return (
     <ThemedView style={tw` flex-1  p-3 `}>
       <WeatherInfo data={data} />
