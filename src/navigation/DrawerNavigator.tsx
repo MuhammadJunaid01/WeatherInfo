@@ -50,6 +50,7 @@ const DrawerNavigator = () => {
             showNotification={true}
             notificationCount={5}
             user={user}
+            theme={theme}
           />
         ),
         headerShown: true, // Ensure header is shown in the Drawer
