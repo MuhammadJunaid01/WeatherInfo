@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, FlatList, ListRenderItem, View} from 'react-native';
 import tw from 'twrnc';
 import {Loader, NewsArticleCard} from '../components';
 import {screenHeight} from '../config/constants';
+import {useAppSelector} from '../hooks/useReduxHooks';
 import {INewsArticle} from '../lib/shared.interface';
 import {useLazyGetNewsQuery} from '../services/apis/newApiSlice';
 const ITEM_HEIGHT = screenHeight * 0.89;

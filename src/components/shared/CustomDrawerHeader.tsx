@@ -87,7 +87,9 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
               navigation.navigate('SignUp');
             }}
             style={[
-              tw`h-8 w-auto px-4 rounded-full items-center justify-center`,
+              tw`h-8 w-auto px-4 rounded-full ${
+                theme === 'dark' ? `border border-[${COLORS.primary}]` : ''
+              } items-center justify-center`,
               {backgroundColor: signUpButtonColor},
             ]}>
             <ThemedText size="h4" style={tw`text-white`}>
