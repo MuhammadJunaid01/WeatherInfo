@@ -11,8 +11,14 @@ interface IProps {
   props: any;
   theme: Theme;
   onThemeChange?: (theme: Theme) => void;
+  activeTheme: Theme | null;
 }
-const CustomDrawer: React.FC<IProps> = ({props, theme, onThemeChange}) => {
+const CustomDrawer: React.FC<IProps> = ({
+  props,
+  theme,
+  onThemeChange,
+  activeTheme,
+}) => {
   return (
     <ThemedView style={tw` flex-1 relative`}>
       {/* Drawer Content */}
@@ -22,7 +28,13 @@ const CustomDrawer: React.FC<IProps> = ({props, theme, onThemeChange}) => {
         {...props}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
-      <ThemeToggle currentTheme={theme} onThemeChange={onThemeChange} />
+      <View style={tw` p-3`}>
+        <ThemeToggle
+          activeTheme={activeTheme}
+          currentTheme={theme}
+          onThemeChange={onThemeChange}
+        />
+      </View>
       {/* Custom Button at the bottom */}
       <View style={tw` p-4 text-gray-200`}>
         <TouchableOpacity>

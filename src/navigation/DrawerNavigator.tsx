@@ -15,14 +15,15 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 const DrawerNavigator = () => {
   // Single selector for better performance
   const {user} = useAppSelector(state => state.auth);
-  const {theme} = useAppSelector(state => state.theme);
-
+  const {theme, activeTheme} = useAppSelector(state => state.theme);
+  console.log('theme', theme);
   const dispatch = useAppDispatch();
   const systemTheme = useColorScheme(); // Automatically re-calculates when system theme changes
 
   // Memoized callback for theme change handling
   const onThemeChange = useCallback(
     (themeVal: Theme) => {
+      // Resolve the final theme based on user selection or system preference
       const resolvedTheme =
         themeVal === 'system'
           ? systemTheme === 'dark'
@@ -30,12 +31,15 @@ const DrawerNavigator = () => {
             : 'light'
           : themeVal;
 
-      if (resolvedTheme !== theme) {
-        dispatch(setTheme(resolvedTheme));
+      // Dispatch only if the theme has changed
+      if (resolvedTheme !== activeTheme) {
+        console.log(`Theme updated: ${resolvedTheme}`); // Optional: log theme changes
+        dispatch(setTheme({theme: resolvedTheme, activeTheme: themeVal}));
       }
     },
-    [dispatch, systemTheme, theme],
+    [activeTheme, dispatch, systemTheme],
   );
+
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -55,6 +59,7 @@ const DrawerNavigator = () => {
           props={props}
           theme={theme}
           onThemeChange={onThemeChange}
+          activeTheme={activeTheme}
         />
       )}>
       <Drawer.Screen name="Main" component={TabNavigator} />

@@ -7,14 +7,16 @@ import {Theme} from '../../lib';
 interface ThemeToggleProps {
   currentTheme: Theme;
   onThemeChange?: (theme: Theme) => void;
+  activeTheme: Theme | null;
 }
 
 const ThemeToggle: React.FC<ThemeToggleProps> = ({
   currentTheme,
+  activeTheme,
   onThemeChange,
 }) => {
   const themes: Theme[] = useMemo(() => ['light', 'dark', 'system'], []);
-
+  console.log('activeTheme', activeTheme);
   const getIcon = useCallback(
     (theme: Theme) => {
       const iconColor = currentTheme === theme ? '#000' : '#6B7280';
@@ -36,7 +38,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
   );
 
   return (
-    <View style={tw`flex-row  bg-transparent rounded-lg p-1`}>
+    <View style={tw`flex-row  bg-transparent rounded-lg p-1 `}>
       {themes.map(theme => (
         <TouchableOpacity
           key={theme}
@@ -49,7 +51,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
             px-3 
             py-2 
             rounded-md
-            ${currentTheme === theme ? 'bg-white shadow-sm' : ''}
+            ${activeTheme === theme ? 'bg-white shadow-sm' : ''}
           `}>
           {getIcon(theme)}
           <Text
@@ -57,7 +59,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
               ml-2 
               text-sm 
               font-medium
-              ${currentTheme === theme ? 'text-gray-900' : 'text-gray-500'}
+              ${activeTheme === theme ? 'text-gray-900' : 'text-gray-500'}
             `}>
             {theme.charAt(0).toUpperCase() + theme.slice(1)}
           </Text>

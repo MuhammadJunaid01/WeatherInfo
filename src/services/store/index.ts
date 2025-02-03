@@ -6,58 +6,49 @@ import {
   reducer as network,
 } from 'react-native-offline';
 import {persistReducer, persistStore} from 'redux-persist';
-import {apiSlice} from '../apis/apiSlice'; // Adjust the path as necessary
+
+import {apiSlice} from '../apis/apiSlice';
 import authReducer from '../features/authSlice';
 import newsReducer from '../features/newsSlice';
 import themeReducer from '../features/themeSlice';
 import weatherReducer from '../features/weatherSlice';
 
-// Middleware for detecting network status
+// Middleware
 const networkMiddleware = createNetworkMiddleware();
 
-// Persist configuration
-const createPersistConfig = (key: string) => ({
+// Persist Configurations
+const persistConfig = (key: string) => ({
   key,
   storage: AsyncStorage,
 });
 
-// Persisted reducers for specific slices
-const persistedReducers = {
-  news: persistReducer(createPersistConfig('news'), newsReducer),
-  weather: persistReducer(createPersistConfig('weather'), weatherReducer),
-  theme: persistReducer(createPersistConfig('theme'), themeReducer),
-};
-
-// Root reducer combining all slices
+// Combine Persisted Reducers
 const rootReducer = combineReducers({
-  ...persistedReducers,
-  auth: authReducer, // Auth slice does not require persistence
-  network, // Network state managed by react-native-offline
-  [apiSlice.reducerPath]: apiSlice.reducer, // API slice for dynamic fetching
+  auth: persistReducer(persistConfig('auth'), authReducer),
+  news: persistReducer(persistConfig('news'), newsReducer),
+  theme: persistReducer(persistConfig('theme'), themeReducer),
+  weather: persistReducer(persistConfig('weather'), weatherReducer),
+  network,
+  [apiSlice.reducerPath]: apiSlice.reducer, // Keep RTK Query dynamic fetching reducer
 });
 
-// Store configuration
+// Store Configuration
 const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
-      immutableCheck: true, // Helps detect state mutations
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Avoid issues with Redux Persist actions
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore redux-persist actions
       },
     }).concat(apiSlice.middleware, networkMiddleware),
-  devTools: process.env.NODE_ENV !== 'production', // Enable Redux DevTools in development
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
-// Persistor for managing store persistence
-export const persistor = persistStore(store, null, () => {
-  console.log('Redux persist initialization complete.');
-});
-
-// Listeners setup for RTK Query features like refetchOnFocus/refetchOnReconnect
+// Persistor Initialization
+export const persistor = persistStore(store);
 setupListeners(store.dispatch);
 
-// Types for Redux state and dispatch
+// Export Types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

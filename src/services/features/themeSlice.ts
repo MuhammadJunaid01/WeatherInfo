@@ -3,18 +3,24 @@ import {Theme} from '../../lib/types';
 
 interface ThemeState {
   theme: Theme;
+  activeTheme: Theme | null;
 }
 
 const initialState: ThemeState = {
   theme: 'system',
+  activeTheme: null,
 };
 
 const themeSlice = createSlice({
   name: 'theme',
   initialState,
   reducers: {
-    setTheme: (state, action: PayloadAction<Theme>) => {
-      state.theme = action.payload;
+    setTheme: (
+      state,
+      action: PayloadAction<{theme: Theme; activeTheme: Theme}>,
+    ) => {
+      state.theme = action.payload.theme;
+      state.activeTheme = action.payload.activeTheme;
     },
   },
 });
