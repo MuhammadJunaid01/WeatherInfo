@@ -8,17 +8,16 @@ import {setWeatherStatus} from '../services/features/weatherSlice';
 
 const WeatherInfoScreen = () => {
   const dispatch = useAppDispatch();
+  const {theme} = useAppSelector(state => state.theme);
+  const {status} = useAppSelector(state => state.weather);
   const [location, setLocation] = useState<{lat: number; lon: number} | null>(
     null,
   );
 
   // Accessing weather data from Redux
-  const weatherState = useAppSelector(state => state.weather);
-  const {data, error, isLoading, refetch} = useGetWeatherQuery(
-    location || {lat: 0, lon: 0},
-    {skip: !location},
-  );
-  console.log('data', data);
+  const {data, isLoading} = useGetWeatherQuery(location || {lat: 0, lon: 0}, {
+    skip: !location,
+  });
   // Get user location on component mount
   useEffect(() => {
     dispatch(setWeatherStatus('loading'));
@@ -38,7 +37,7 @@ const WeatherInfoScreen = () => {
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   }, [dispatch]);
-  if (isLoading) {
+  if (isLoading || status === 'loading') {
     return (
       <ThemedView style={tw` flex-1 items-center justify-center`}>
         <Loader size={'large'} />
@@ -47,7 +46,7 @@ const WeatherInfoScreen = () => {
   }
   return (
     <ThemedView style={tw` flex-1  p-3 `}>
-      <WeatherInfo data={data} />
+      <WeatherInfo data={data} theme={theme} />
     </ThemedView>
   );
 };

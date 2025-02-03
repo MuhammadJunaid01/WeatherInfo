@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import tw from '../../tailwind';
-import {WeatherAPIResponse} from '../lib';
-import {WeatherInfoCard} from './shared';
+import {Theme, WeatherAPIResponse} from '../lib';
+import {ThemedText, WeatherInfoCard} from './shared';
 interface IProps {
   data?: WeatherAPIResponse;
+  theme?: Theme;
 }
-const WeatherInfo: React.FC<IProps> = ({data}) => {
-  console.log(data);
+const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
   const kelvinToCelsius = (kelvin?: number) => {
     if (!kelvin) {
       return 'N/A';
@@ -26,23 +26,33 @@ const WeatherInfo: React.FC<IProps> = ({data}) => {
       hour12: false,
     });
   };
+  const generateBgColor = useMemo(() => {
+    switch (theme) {
+      case 'light':
+        return 'bg-blue-500';
+      case 'dark':
+        return;
+      default:
+        break;
+    }
+  }, [theme]);
   return (
     <View style={tw` flex-1  bg-transparent`}>
-      <ScrollView style={tw`flex-1 bg-white`}>
+      <ScrollView style={tw`flex-1 `}>
         {/* Header Section */}
-        <View style={tw`p-6 bg-blue-500`}>
+        <View style={tw`p-6 bg-blue-500 rounded-lg`}>
           {data && (
-            <Text style={tw`text-white text-3xl font-bold`}>
+            <ThemedText size="h2" style={tw``}>
               {data.name}, {data.sys?.country}
-            </Text>
+            </ThemedText>
           )}
-          <Text style={tw`text-white text-5xl font-bold my-4`}>
+          <ThemedText size="h1" style={tw` mt-2 mb-1`}>
             {kelvinToCelsius(data?.main?.temp)}
-          </Text>
-          <Text style={tw`text-white text-xl`}>
+          </ThemedText>
+          <ThemedText size="h3" style={tw``}>
             {data && data.weather?.[0]?.description?.charAt(0).toUpperCase()}
             {data && data.weather?.[0]?.description?.slice(1)}
-          </Text>
+          </ThemedText>
         </View>
 
         {/* Main Weather Info */}
