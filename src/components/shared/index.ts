@@ -4,6 +4,7 @@ import Loader from './Loader';
 import NewsArticleCard from './NewsArticleCard';
 import ThemedText from './ThemedText';
 import ThemedView from './ThemedView';
+import ThemeToggle from './ThemeToggle';
 import WeatherInfoCard from './WeatherInfoCard';
 
 export {
@@ -13,5 +14,6 @@ export {
   NewsArticleCard,
   ThemedText,
   ThemedView,
+  ThemeToggle,
   WeatherInfoCard,
 };
