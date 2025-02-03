@@ -127,18 +127,37 @@ const AuthForm: React.FC<IAuthProps> = ({
               <ThemedText size="h4" style={tw`mb-2`}>
                 Email
               </ThemedText>
-              <ThemedInput
-                value={formData.email}
-                onChangeText={text => handleChange('email', text)}
-                placeholder="Enter your email"
-                placeholderTextColor={
-                  isDarkMode ? COLORS.light.primary : COLORS.dark.primary
-                }
-                keyboardType="email-address"
-                autoCapitalize="none"
-                isDarkMode={isDarkMode}
-                iconName="email"
-              />
+              <View style={tw`relative h-[${moderateScale(55)}px]`}>
+                {/* <View
+                  style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
+                  <Icon name="email" size={20} style={tw`${getIconColor()}`} />
+                </View> */}
+                <ThemedInput
+                  value={formData.email}
+                  onChangeText={text => handleChange('email', text)}
+                  placeholder="Enter your email"
+                  placeholderTextColor={
+                    isDarkMode ? COLORS.light.primary : COLORS.dark.primary
+                  }
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  isDarkMode={isDarkMode}
+                  iconName="email"
+                />
+                {/* <TextInput
+                  value={formData.email}
+                  onChangeText={text => handleChange('email', text)}
+                  placeholder="Enter your email"
+                  placeholderTextColor={
+                    isDarkMode ? COLORS.light.primary : COLORS.dark.primary
+                  }
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  onFocus={() => setFocusedField('email')}
+                  onBlur={() => setFocusedField(null)}
+                  style={getInputStyles(focusedField === 'email')}
+                /> */}
+              </View>
               {errors.email ? (
                 <ThemedText size="h4" style={tw`text-red-400 my-1`}>
                   {errors.email}
