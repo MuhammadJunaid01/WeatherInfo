@@ -30,3 +30,12 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
 }
+export interface INewsSource {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  category: string;
+  language: string;
+  country: string;
+}

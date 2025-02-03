@@ -9,7 +9,9 @@ import {persistReducer, persistStore} from 'redux-persist';
 
 import {apiSlice} from '../apis/apiSlice';
 import authReducer from '../features/authSlice';
+import newsHeadLineReducer from '../features/newsHeadlineSlice';
 import newsReducer from '../features/newsSlice';
+import newsSourcesSliceReducer from '../features/newsSourcesSlice';
 import themeReducer from '../features/themeSlice';
 import weatherReducer from '../features/weatherSlice';
 
@@ -28,6 +30,8 @@ const rootReducer = combineReducers({
   news: persistReducer(persistConfig('news'), newsReducer),
   theme: persistReducer(persistConfig('theme'), themeReducer),
   weather: persistReducer(persistConfig('weather'), weatherReducer),
+  headline: persistReducer(persistConfig('headline'), newsHeadLineReducer),
+  source: persistReducer(persistConfig('source'), newsSourcesSliceReducer),
   network,
   [apiSlice.reducerPath]: apiSlice.reducer, // Keep RTK Query dynamic fetching reducer
 });
