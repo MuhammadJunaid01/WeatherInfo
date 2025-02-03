@@ -1,4 +1,5 @@
 import AuthForm from './AuthForm';
+import BottomModal from './BottomModal';
 import CustomDrawerHeader from './CustomDrawerHeader';
 import Loader from './Loader';
 import NewsArticleCard from './NewsArticleCard';
@@ -9,6 +10,7 @@ import WeatherInfoCard from './WeatherInfoCard';
 
 export {
   AuthForm,
+  BottomModal,
   CustomDrawerHeader,
   Loader,
   NewsArticleCard,

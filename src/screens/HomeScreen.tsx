@@ -1,24 +1,33 @@
-import React, {useEffect, useMemo} from 'react';
-import {StatusBar, useColorScheme} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {ScrollView, StatusBar, useColorScheme, View} from 'react-native';
 import tw from '../../tailwind';
-import {Loader, ThemedText, ThemedView} from '../components';
+import {ThemedText, ThemedView} from '../components';
 import AnimatedLoader from '../components/shared/AnimatedLoader';
+import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
-import {COLORS} from '../config/constants';
+import {COLORS, screenWidth} from '../config/constants';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {
-  useGetNewsHeadLineQuery,
   useGetNewsSourcesQuery,
+  useLazyGetNewsHeadLineQuery,
 } from '../services/apis/newApiSlice';
 import {setTheme} from '../services/features/themeSlice';
-
+interface IHeadlineQuery {
+  country: string;
+  page: number;
+  pageSize: number;
+}
+const initialHeadlineQuery: IHeadlineQuery = {
+  country: 'us', // Example country
+  page: 1,
+  pageSize: 5,
+};
 const HomeScreen = () => {
-  const {data, isLoading} = useGetNewsHeadLineQuery({
-    country: 'us', // Example country
-    page: 1,
-    pageSize: 5,
-  });
-  const {data: sources} = useGetNewsSourcesQuery({category: 'general'});
+  const [headlineQuery, setHeadlineQuery] =
+    useState<IHeadlineQuery>(initialHeadlineQuery);
+  const [getHeadline, {data: headline, isLoading}] =
+    useLazyGetNewsHeadLineQuery();
+  const {data: sourcesData} = useGetNewsSourcesQuery({category: 'general'});
   const dispatch = useAppDispatch();
   const {activeTheme, theme} = useAppSelector(state => state.theme);
   const isDarkMode = useMemo(() => theme === 'dark', [theme]);
@@ -39,6 +48,14 @@ const HomeScreen = () => {
       isDarkMode ? COLORS.dark.primary : COLORS.light.primary,
     );
   }, [isDarkMode]);
+  useEffect(() => {
+    getHeadline({
+      country: 'us', // Example country
+      page: 1,
+      pageSize: 5,
+    });
+  }, [getHeadline]);
+  console.log('sources', sourcesData?.sources[0]);
   if (isLoading) {
     return (
       <ThemedView style={tw` flex-1`}>
@@ -54,9 +71,22 @@ const HomeScreen = () => {
   return (
     <ThemedView style={tw` flex-1  p-3  gap-y-3`}>
       <ThemedText size="h2">Home</ThemedText>
-      {data && data.articles.length > 0 && (
-        <TopNewsHeadline isDarkMode={isDarkMode} article={data.articles[0]} />
+      {headline && headline.articles.length > 0 && (
+        <View style={tw`   w-full`}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {headline.articles.map((head, i) => {
+              return (
+                <View style={tw` w-[${screenWidth * 0.67}px] mr-3`} key={i}>
+                  <TopNewsHeadline isDarkMode={isDarkMode} article={head} />
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
       )}
+      <ThemedButton isDarkMode={isDarkMode} size="h2">
+        hello
+      </ThemedButton>
     </ThemedView>
   );
 };

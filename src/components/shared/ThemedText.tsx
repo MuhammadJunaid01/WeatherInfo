@@ -3,8 +3,7 @@ import {Text, TextProps, TextStyle} from 'react-native';
 import {scale} from 'react-native-size-matters';
 import {COLORS} from '../../config/constants';
 import {useAppSelector} from '../../hooks/useReduxHooks';
-
-type Size = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+import {Size} from '../../lib';
 
 interface IProps extends TextProps {
   size: Size;

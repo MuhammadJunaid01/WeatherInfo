@@ -1,5 +1,9 @@
 import {showToast} from '../../lib';
-import {IGenericNewsResponse, INewsArticle} from '../../lib/shared.interface';
+import {
+  IGenericNewsResponse,
+  INewsArticle,
+  INewsSource,
+} from '../../lib/shared.interface';
 import {setHeadline} from '../features/newsHeadlineSlice';
 import {RootState} from '../store';
 import {apiSlice} from './apiSlice';
@@ -175,7 +179,7 @@ const newsApiSlice = apiSlice.injectEndpoints({
       },
     }),
     getNewsSources: builder.query<
-      IGenericNewsResponse<INewsSource[]>,
+      {status: string; sources: INewsSource[]},
       {category?: string; language?: string; country?: string}
     >({
       queryFn: async (
@@ -187,8 +191,8 @@ const newsApiSlice = apiSlice.injectEndpoints({
         const state = _queryApi.getState() as RootState;
 
         if (!state.network.isConnected) {
-          const offlineSources = state.sources.sources;
-          const status = state.sources.status;
+          const offlineSources = state.source.sources;
+          const status = state.source.status;
           return {
             data: {
               sources: offlineSources || [],
@@ -249,4 +253,6 @@ export const {
   useLazyGetNewsQuery,
   useGetNewsHeadLineQuery,
   useGetNewsSourcesQuery,
+  useLazyGetNewsHeadLineQuery,
+  useLazyGetNewsSourcesQuery,
 } = newsApiSlice;

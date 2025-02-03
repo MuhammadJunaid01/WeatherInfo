@@ -39,3 +39,12 @@ export interface INewsSource {
   language: string;
   country: string;
 }
+export interface INewsSource {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  category: string;
+  language: string;
+  country: string;
+}
