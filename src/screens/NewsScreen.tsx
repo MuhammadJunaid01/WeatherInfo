@@ -3,13 +3,15 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, FlatList, ListRenderItem, View} from 'react-native';
 import tw from 'twrnc';
-import {Loader, NewsArticleCard} from '../components';
+import {Loader, NewsArticleCard, ThemedView} from '../components';
 import {screenHeight} from '../config/constants';
 import {useAppSelector} from '../hooks/useReduxHooks';
 import {INewsArticle} from '../lib/shared.interface';
 import {useLazyGetNewsQuery} from '../services/apis/newApiSlice';
 const ITEM_HEIGHT = screenHeight * 0.89;
 const NewsScreen = () => {
+  const {theme} = useAppSelector(state => state.theme);
+  const isDarkMode = useMemo(() => theme === 'dark', [theme]);
   const [articles, setArticles] = useState<INewsArticle[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -20,7 +22,6 @@ const NewsScreen = () => {
     // Fetch the first page of articles when the component mounts
     triggerGetNews({query: 'bitcoin', page: 1, pageSize: 10});
   }, [triggerGetNews]);
-  console.log('data?.articles.length', data?.articles.length);
   useEffect(() => {
     if (data?.articles) {
       setArticles(prev => [...prev, ...data.articles]);
@@ -37,8 +38,14 @@ const NewsScreen = () => {
   }, [currentPage, hasMore, isFetching, triggerGetNews]);
 
   const renderItem: ListRenderItem<INewsArticle> = useCallback(
-    ({item}) => <NewsArticleCard item_height={ITEM_HEIGHT} article={item} />,
-    [],
+    ({item}) => (
+      <NewsArticleCard
+        isDarkMode={isDarkMode}
+        item_height={ITEM_HEIGHT}
+        article={item}
+      />
+    ),
+    [isDarkMode],
   );
 
   const keyExtractor = useCallback(
@@ -61,17 +68,21 @@ const NewsScreen = () => {
     ) : null;
 
   if (isLoading && !articles.length) {
-    return <Loader size="large" />;
+    return (
+      <ThemedView style={tw` flex-1 items-center justify-center`}>
+        <Loader size="large" />
+      </ThemedView>
+    );
   }
 
   return (
-    <View style={tw`flex-1 bg-white`}>
+    <ThemedView style={tw`flex-1 `}>
       <FlatList
         data={articles}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
-        contentContainerStyle={tw`bg-white p-2`}
+        contentContainerStyle={tw` p-2`}
         ListFooterComponent={ListFooter}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
@@ -89,7 +100,7 @@ const NewsScreen = () => {
         updateCellsBatchingPeriod={100}
         scrollEventThrottle={16}
       />
-    </View>
+    </ThemedView>
   );
 };
 

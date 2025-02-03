@@ -9,11 +9,13 @@ import ThemedText from './ThemedText';
 interface NewsArticleCardProps {
   article: INewsArticle;
   item_height?: number;
+  isDarkMode: boolean;
 }
 
 const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
   article,
   item_height = screenHeight * 0.47,
+  isDarkMode,
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -45,7 +47,9 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
 
   return (
     <View
-      style={tw`bg-white rounded-lg shadow m-1 mb-4  h-[${item_height}px] overflow-hidden`}>
+      style={tw` rounded-lg ${
+        isDarkMode ? ' border border-green-400' : 'shadow'
+      }  m-1 mb-4  h-[${item_height}px] overflow-hidden`}>
       <View style={tw`relative`}>
         <FastImage
           source={{
@@ -56,10 +60,7 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
           resizeMode={FastImage.resizeMode.cover}
         />
         <View style={tw`absolute top-4 left-4 bg-blue-600 px-2 py-1 rounded`}>
-          <ThemedText
-            size="h4"
-            color="text-white"
-            style={tw` text-sm font-medium`}>
+          <ThemedText size="h4" style={tw` text-sm font-medium`}>
             {article?.source?.name}
           </ThemedText>
         </View>
@@ -67,11 +68,7 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
 
       <View style={tw`p-4`}>
         <View style={tw`mb-2`}>
-          <ThemedText
-            numberOfLines={1}
-            size="h3"
-            color="text-gray-700"
-            style={tw` mb-1`}>
+          <ThemedText numberOfLines={1} size="h3" style={tw` mb-1`}>
             {article?.title}
           </ThemedText>
           <ThemedText size="h4" style={tw` `} numberOfLines={3}>
@@ -88,16 +85,12 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
               </Text>
             </View>
             <View>
-              <ThemedText
-                numberOfLines={1}
-                size="h5"
-                color="text-gray-800"
-                style={tw` `}>
+              <ThemedText numberOfLines={1} size="h5" style={tw` `}>
                 {article?.author || 'Unknown Author'}
               </ThemedText>
-              <Text style={tw`text-sm text-gray-500`}>
+              <ThemedText size="h5" style={tw``}>
                 {formatDate(article?.publishedAt)}
-              </Text>
+              </ThemedText>
             </View>
           </View>
 
@@ -105,7 +98,7 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
             hitSlop={{top: 30, right: 30, bottom: 30, left: 30}}
             onPress={handlePress}
             style={tw`flex-row items-center`}>
-            <ThemedText size="h4" color="text-blue-600" style={tw`  mr-1`}>
+            <ThemedText size="h4" style={tw`  mr-1`}>
               Read More
             </ThemedText>
             {/* You can add an icon here using a React Native icon library if desired */}
