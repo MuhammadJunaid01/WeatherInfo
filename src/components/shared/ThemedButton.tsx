@@ -8,6 +8,7 @@ interface IProps extends TouchableOpacityProps {
   isDarkMode: boolean;
   size: Size;
   textAlign?: 'center' | 'start';
+  isRenderView?: boolean;
 }
 const ThemedButton: React.FC<IProps> = ({
   isDarkMode,
@@ -15,6 +16,7 @@ const ThemedButton: React.FC<IProps> = ({
   style,
   children,
   textAlign = 'center',
+  isRenderView = false,
   ...rest
 }) => {
   const buttonStyle = isDarkMode
@@ -29,20 +31,24 @@ const ThemedButton: React.FC<IProps> = ({
     <TouchableOpacity
       style={[
         buttonStyle,
-        tw`${
-          isDarkMode ? `border border-[${COLORS.primary}]` : ''
+        tw` m-1 ${
+          isDarkMode ? `border border-[${COLORS.primary}]` : '  shadow-sm'
         } rounded-lg p-4`,
         style,
       ]}
       {...rest}>
-      <ThemedText
-        size={size}
-        style={[
-          tw` ${textAlign === 'center' ? 'text-center' : ''} `,
-          textStyle,
-        ]}>
-        {children}
-      </ThemedText>
+      {isRenderView ? (
+        children
+      ) : (
+        <ThemedText
+          size={size}
+          style={[
+            tw` ${textAlign === 'center' ? 'text-center' : ''} `,
+            textStyle,
+          ]}>
+          {children}
+        </ThemedText>
+      )}
     </TouchableOpacity>
   );
 };

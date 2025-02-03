@@ -16,6 +16,7 @@ import tw from 'twrnc';
 import {z} from 'zod';
 import {COLORS} from '../../config/constants';
 import {authSchema, RootStackParamList} from '../../lib';
+import ThemedInput from './ThemedInput';
 import ThemedText from './ThemedText';
 import ThemedView from './ThemedView';
 
@@ -127,11 +128,23 @@ const AuthForm: React.FC<IAuthProps> = ({
                 Email
               </ThemedText>
               <View style={tw`relative h-[${moderateScale(55)}px]`}>
-                <View
+                {/* <View
                   style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
                   <Icon name="email" size={20} style={tw`${getIconColor()}`} />
-                </View>
-                <TextInput
+                </View> */}
+                <ThemedInput
+                  value={formData.email}
+                  onChangeText={text => handleChange('email', text)}
+                  placeholder="Enter your email"
+                  placeholderTextColor={
+                    isDarkMode ? COLORS.light.primary : COLORS.dark.primary
+                  }
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  isDarkMode={isDarkMode}
+                  iconName="email"
+                />
+                {/* <TextInput
                   value={formData.email}
                   onChangeText={text => handleChange('email', text)}
                   placeholder="Enter your email"
@@ -143,7 +156,7 @@ const AuthForm: React.FC<IAuthProps> = ({
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
                   style={getInputStyles(focusedField === 'email')}
-                />
+                /> */}
               </View>
               {errors.email ? (
                 <ThemedText size="h4" style={tw`text-red-400 my-1`}>

@@ -3,6 +3,7 @@ import BottomModal from './BottomModal';
 import CustomDrawerHeader from './CustomDrawerHeader';
 import Loader from './Loader';
 import NewsArticleCard from './NewsArticleCard';
+import ThemedInput from './ThemedInput';
 import ThemedText from './ThemedText';
 import ThemedView from './ThemedView';
 import ThemeToggle from './ThemeToggle';
@@ -14,6 +15,7 @@ export {
   CustomDrawerHeader,
   Loader,
   NewsArticleCard,
+  ThemedInput,
   ThemedText,
   ThemedView,
   ThemeToggle,
