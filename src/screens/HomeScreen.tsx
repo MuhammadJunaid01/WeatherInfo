@@ -1,17 +1,27 @@
 /* eslint-disable react/no-unstable-nested-components */
-import {
+import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetScrollView,
+  BottomSheetView,
 } from '@gorhom/bottom-sheet';
+import {styles} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/BottomSheetFlashList';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {ScrollView, StatusBar, useColorScheme, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StatusBar,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import tw from '../../tailwind';
+import {categories, countries} from '../assets';
 import {ThemedInput, ThemedText, ThemedView} from '../components';
 import AnimatedLoader from '../components/shared/AnimatedLoader';
 import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
-import {COLORS, screenWidth} from '../config/constants';
+import {COLORS, moderateScale, screenWidth} from '../config/constants';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {
   useGetNewsSourcesQuery,
@@ -31,12 +41,14 @@ interface IHeadlineQuery {
   page: number;
   pageSize: number;
   search: string;
+  category: string;
 }
 const initialHeadlineQuery: IHeadlineQuery = {
   country: 'us', // Example country
   page: 1,
   pageSize: 5,
   search: '',
+  category: '',
 };
 const HomeScreen = () => {
   // ref
@@ -50,11 +62,7 @@ const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const {activeTheme, theme} = useAppSelector(state => state.theme);
   const isDarkMode = useMemo(() => theme === 'dark', [theme]);
-  const countries = useMemo(() => {
-    if (sourcesData?.sources && sourcesData.sources.length > 0) {
-      return sourcesData?.sources.map(source => source.country);
-    }
-  }, [sourcesData]);
+
   const systemTheme = useColorScheme();
   useEffect(() => {
     if (!activeTheme) {
@@ -80,7 +88,7 @@ const HomeScreen = () => {
     });
   }, [getHeadline, headlineQuery]);
   console.log('sources', sourcesData?.sources);
-  const snapPoints = useMemo(() => ['10%', '40%', '76%'], []);
+  const snapPoints = useMemo(() => ['10%', '40%', '86%'], []);
 
   const onPressModalHandle = useCallback((key: keyof IModals, val: boolean) => {
     // if (val) {
@@ -103,10 +111,11 @@ const HomeScreen = () => {
     if (!headlineQuery.search) {
       return countries;
     }
-    return (countries ?? []).filter(
-      country => country.toLowerCase() === headlineQuery.search.toLowerCase(),
+    return countries.filter(
+      country =>
+        country.code.toLowerCase() === headlineQuery.search.toLowerCase(),
     );
-  }, [countries, headlineQuery.search]);
+  }, [headlineQuery.search]);
   if (isLoading) {
     return (
       <ThemedView style={tw` flex-1`}>
@@ -135,7 +144,10 @@ const HomeScreen = () => {
         </View>
         <View style={tw` flex-1`}>
           <ThemedButton
-            onPress={() => onPressModalHandle('isCategoryModalOPen', true)}
+            onPress={() => {
+              modalRef.current?.present();
+              onPressModalHandle('isCategoryModalOPen', true);
+            }}
             isDarkMode={isDarkMode}
             size="h4">
             Select Category
@@ -156,6 +168,11 @@ const HomeScreen = () => {
         </View>
       )}
       <BottomSheetModal
+        onChange={index => {
+          if (index === -1) {
+            setModal(initialModalState);
+          }
+        }}
         ref={modalRef}
         enablePanDownToClose={false}
         enableHandlePanningGesture={false}
@@ -165,9 +182,9 @@ const HomeScreen = () => {
         handleStyle={tw` ${isDarkMode ? `bg-[${COLORS.dark.primary}]` : ``}`}
         backdropComponent={props => <BottomSheetBackdrop {...props} />}
         index={2}>
-        <ThemedView style={tw` flex-1 mt-4 p-4  pb-11`}>
+        <ThemedView style={tw` flex-1 mt-4 p-4  `}>
           {modal.isCountryModalOPen && (
-            <View style={tw``}>
+            <View style={tw` flex-1`}>
               <ThemedInput
                 onChangeText={text => {
                   updateSearchQuery(text);
@@ -178,9 +195,10 @@ const HomeScreen = () => {
                 containerStyle={tw` top-[14px]`}
               />
               <BottomSheetScrollView
-                contentContainerStyle={tw` flex-grow`}
+                style={tw` flex-1`}
+                contentContainerStyle={tw` flex-grow pb-32`}
                 contentInsetAdjustmentBehavior={'automatic'}>
-                {filteredCountries?.map((country, i) => {
+                {filteredCountries.map(({code, flag}, i) => {
                   return (
                     <ThemedButton
                       isRenderView
@@ -188,15 +206,20 @@ const HomeScreen = () => {
                       size="h5"
                       onPress={() => {
                         modalRef.current?.dismiss();
-                        onHandleSource('country', country);
+                        onHandleSource('country', code);
                       }}
                       style={tw``}
                       key={i}>
                       <View
                         style={tw` flex-row gap-x-3 justify-center items-center`}>
-                        <ThemedText size="h4">
-                          {country.toUpperCase()}
-                        </ThemedText>
+                        <ThemedText size="h4">{code.toUpperCase()}</ThemedText>
+                        <Image
+                          source={{uri: flag}}
+                          style={tw` h-[${moderateScale(
+                            20,
+                          )}px] w-[${moderateScale(20)}px]`}
+                          resizeMode="contain"
+                        />
                       </View>
                     </ThemedButton>
                   );
@@ -204,8 +227,95 @@ const HomeScreen = () => {
               </BottomSheetScrollView>
             </View>
           )}
+          {modal.isCategoryModalOPen && (
+            <ThemedView style={tw`  flex-1`}>
+              <BottomSheetScrollView contentContainerStyle={tw` flex-grow`}>
+                {categories.map((category, i) => {
+                  return (
+                    <ThemedButton
+                      isRenderView
+                      isDarkMode={isDarkMode}
+                      size="h5"
+                      onPress={() => {
+                        modalRef.current?.dismiss();
+                        onHandleSource('category', category);
+                      }}
+                      style={tw``}
+                      key={i}>
+                      <View
+                        style={tw` flex-row gap-x-3 justify-center items-center`}>
+                        <ThemedText size="h4">
+                          {category.toUpperCase()}
+                        </ThemedText>
+                      </View>
+                    </ThemedButton>
+                  );
+                })}
+              </BottomSheetScrollView>
+            </ThemedView>
+          )}
         </ThemedView>
       </BottomSheetModal>
+      {/* <BottomModal
+        heights={snapPoints}
+        defaultIndex={2}
+        iconStyle={tw` ${
+          isDarkMode
+            ? `text-[${COLORS.dark.secondary}] text-center text-[22px]`
+            : ``
+        }`}
+        handleStyle={tw` ${isDarkMode ? `bg-[${COLORS.dark.primary}]` : ``}`}
+        ref={modalRef}
+        isUpDown={false}
+        onCloseModal={() => setModal(initialModalState)}
+        ModalBody={() => {
+          return (
+            <ThemedView style={tw` flex-1 mt-4 p-4  pb-11`}>
+              {modal.isCountryModalOPen && (
+                <View style={tw``}>
+                  <ThemedInput
+                    onChangeText={text => {
+                      updateSearchQuery(text);
+                    }}
+                    isDarkMode={isDarkMode}
+                    iconName={'search'}
+                    iconSize={40}
+                    containerStyle={tw` top-[14px]`}
+                  />
+                  {filteredCountries.map(({code, flag}, i) => {
+                    return (
+                      <ThemedButton
+                        isRenderView
+                        isDarkMode={isDarkMode}
+                        size="h5"
+                        onPress={() => {
+                          modalRef.current?.dismiss();
+                          onHandleSource('country', code);
+                        }}
+                        style={tw``}
+                        key={i}>
+                        <View
+                          style={tw` flex-row gap-x-3 justify-center items-center`}>
+                          <ThemedText size="h4">
+                            {code.toUpperCase()}
+                          </ThemedText>
+                          <Image
+                            source={{uri: flag}}
+                            style={tw` h-[${moderateScale(
+                              20,
+                            )}px] w-[${moderateScale(20)}px]`}
+                            resizeMode="contain"
+                          />
+                        </View>
+                      </ThemedButton>
+                    );
+                  })}
+                </View>
+              )}
+            </ThemedView>
+          );
+        }}
+      /> */}
     </ThemedView>
   );
 };
