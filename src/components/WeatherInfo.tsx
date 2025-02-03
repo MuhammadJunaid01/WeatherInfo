@@ -32,7 +32,7 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
 
   return (
     <View style={tw` flex-1  bg-transparent`}>
-      <ScrollView style={tw`flex-1 `}>
+      <ScrollView contentContainerStyle={tw` flex-grow`}>
         {/* Header Section */}
         <View
           style={tw`p-6  ${
@@ -54,7 +54,7 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
 
         {/* Main Weather Info */}
         <View style={tw`p-4`}>
-          <View style={tw`flex-row flex-wrap justify-between`}>
+          <View style={tw`flex-row flex-wrap justify-start`}>
             <WeatherInfoCard
               isDarkMode={isDarkMode}
               label="Feels Like"
@@ -102,9 +102,11 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
           </View>
 
           {/* Sun Times */}
-          <View style={tw`mt-4`}>
-            <Text style={tw`text-xl font-semibold mb-2 px-2`}>Sun Times</Text>
-            <View style={tw`flex-row justify-between`}>
+          <View style={tw`mt-1`}>
+            <ThemedText size="h3" style={tw` mb-2 px-2`}>
+              Sun Times
+            </ThemedText>
+            <View style={tw`flex-row justify-start`}>
               <WeatherInfoCard
                 isDarkMode={isDarkMode}
                 label="Sunrise"
@@ -120,12 +122,12 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
 
           {/* Last Updated */}
           <View style={tw`mt-4 items-center`}>
-            <Text style={tw`text-gray-500`}>
+            <ThemedText size="h4" style={tw``}>
               Last Updated:
               {new Date(
                 data?.dt ? data.dt * 1000 : Date.now(),
               ).toLocaleString()}
-            </Text>
+            </ThemedText>
           </View>
         </View>
       </ScrollView>
