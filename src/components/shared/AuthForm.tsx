@@ -134,7 +134,7 @@ const AuthForm: React.FC<IAuthProps> = ({
                 </View> */}
                 <ThemedInput
                   value={formData.email}
-                  onChangeText={text => handleChange('email', text)}
+                  onChangeText={(text: string) => handleChange('email', text)}
                   placeholder="Enter your email"
                   placeholderTextColor={
                     isDarkMode ? COLORS.light.primary : COLORS.dark.primary

@@ -2,10 +2,6 @@
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Image, ScrollView, StatusBar, useColorScheme, View} from 'react-native';
-/* eslint-disable react/no-unstable-nested-components */
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Image, ScrollView, StatusBar, useColorScheme, View} from 'react-native';
 import tw from '../../tailwind';
 import {countries} from '../assets';
 import {BottomModal, ThemedInput, ThemedText, ThemedView} from '../components';
@@ -13,21 +9,12 @@ import AnimatedLoader from '../components/shared/AnimatedLoader';
 import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
 import {COLORS, moderateScale, screenWidth} from '../config/constants';
-import {COLORS, moderateScale, screenWidth} from '../config/constants';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {
   useGetNewsSourcesQuery,
   useLazyGetNewsHeadLineQuery,
 } from '../services/apis/newApiSlice';
 import {setTheme} from '../services/features/themeSlice';
-interface IModals {
-  isCountryModalOPen: boolean;
-  isCategoryModalOPen: boolean;
-}
-const initialModalState: IModals = {
-  isCountryModalOPen: false,
-  isCategoryModalOPen: false,
-};
 interface IModals {
   isCountryModalOPen: boolean;
   isCategoryModalOPen: boolean;
@@ -49,9 +36,6 @@ const initialHeadlineQuery: IHeadlineQuery = {
   search: '',
 };
 const HomeScreen = () => {
-  // ref
-  const modalRef = useRef<BottomSheetModal>(null);
-  const [modal, setModal] = useState<IModals>(initialModalState);
   // ref
   const modalRef = useRef<BottomSheetModal>(null);
   const [modal, setModal] = useState<IModals>(initialModalState);
@@ -83,28 +67,11 @@ const HomeScreen = () => {
   useEffect(() => {
     getHeadline({
       country: headlineQuery.country,
-      country: headlineQuery.country,
       page: 1,
       pageSize: 5,
     });
   }, [getHeadline, headlineQuery]);
-  }, [getHeadline, headlineQuery]);
   console.log('sources', sourcesData?.sources[0]);
-  const snapPoints = useMemo(() => ['10%', '40%', '66%'], []);
-  const onPressModalHandle = useCallback(
-    (key: keyof IModals, val: boolean) => {
-      if (val) {
-        modalRef.current?.present();
-      }
-      setModal(prev => ({...prev, [key]: val}));
-    },
-    [modalRef],
-  );
-  const onHandleSource = useCallback(
-    (key: keyof IHeadlineQuery, val: any) =>
-      setHeadlineQuery(prev => ({...prev, [key]: val})),
-    [],
-  );
   const snapPoints = useMemo(() => ['10%', '40%', '66%'], []);
   const onPressModalHandle = useCallback(
     (key: keyof IModals, val: boolean) => {
@@ -134,24 +101,6 @@ const HomeScreen = () => {
   }
   return (
     <ThemedView style={tw` flex-1  p-3  gap-y-3`}>
-      <View style={tw` flex-row items-center gap-x-3 flex-wrap w-full`}>
-        <View style={tw` flex-1`}>
-          <ThemedButton
-            onPress={() => onPressModalHandle('isCountryModalOPen', true)}
-            isDarkMode={isDarkMode}
-            size="h4">
-            Select Country
-          </ThemedButton>
-        </View>
-        <View style={tw` flex-1`}>
-          <ThemedButton
-            onPress={() => onPressModalHandle('isCategoryModalOPen', true)}
-            isDarkMode={isDarkMode}
-            size="h4">
-            Select Category
-          </ThemedButton>
-        </View>
-      </View>
       <View style={tw` flex-row items-center gap-x-3 flex-wrap w-full`}>
         <View style={tw` flex-1`}>
           <ThemedButton

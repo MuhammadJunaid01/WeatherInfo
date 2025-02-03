@@ -1,5 +1,11 @@
 import React, {useCallback, useState} from 'react';
-import {TextInput, TextInputProps, View} from 'react-native';
+import {
+  StyleProp,
+  TextInput,
+  TextInputProps,
+  View,
+  ViewProps,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import tw from '../../../tailwind';
 import {moderateScale} from '../../config/constants';
@@ -9,6 +15,8 @@ interface IProps extends TextInputProps {
   iconName: string;
   isPasswordField?: boolean;
   isShowInputIcon?: boolean;
+  iconSize?: number;
+  containerStyle?: StyleProp<ViewProps>;
 }
 
 const ThemedInput: React.FC<IProps> = ({
@@ -16,6 +24,8 @@ const ThemedInput: React.FC<IProps> = ({
   iconName,
   isPasswordField = false,
   isShowInputIcon = true,
+  iconSize = 20,
+  containerStyle,
   ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -45,8 +55,8 @@ const ThemedInput: React.FC<IProps> = ({
   return (
     <View style={tw`relative h-[${moderateScale(55)}px]`}>
       {isShowInputIcon && (
-        <View style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
-          <Icon name={iconName} size={20} style={tw`${getIconColor()}`} />
+        <View style={[tw`absolute top-[${18}px] left-3 z-10`, containerStyle]}>
+          <Icon name={iconName} size={iconSize} style={tw`${getIconColor()}`} />
         </View>
       )}
       <TextInput
@@ -61,7 +71,7 @@ const ThemedInput: React.FC<IProps> = ({
           <Icon
             name={showPassword ? 'visibility' : 'visibility-off'}
             size={20}
-            color={iconColor()}
+            style={tw`${getIconColor()}`}
             onPress={togglePasswordVisibility}
           />
         </View>
