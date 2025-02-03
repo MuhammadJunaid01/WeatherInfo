@@ -6,7 +6,7 @@ import {Theme} from '../../lib';
 
 interface ThemeToggleProps {
   currentTheme: Theme;
-  onThemeChange: (theme: Theme) => void;
+  onThemeChange?: (theme: Theme) => void;
 }
 
 const ThemeToggle: React.FC<ThemeToggleProps> = ({
@@ -40,7 +40,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       {themes.map(theme => (
         <TouchableOpacity
           key={theme}
-          onPress={() => onThemeChange(theme)}
+          onPress={() => onThemeChange?.(theme)}
           style={tw`
             flex-1 
             flex-row 
