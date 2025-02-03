@@ -11,6 +11,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import tw from '../../../tailwind';
 import ThemedText from './ThemedText';
+import ThemedView from './ThemedView';
 
 interface IProps {
   onCloseModal?: () => void;
@@ -20,6 +21,7 @@ interface IProps {
   isUpDown?: boolean;
   isHorizontalScroll?: boolean;
   handleStyle?: StyleProp<ViewProps>;
+  iconStyle?: StyleProp<ViewProps>;
 }
 const BottomModal = React.forwardRef<BottomSheetModal, IProps>(
   (
@@ -31,6 +33,7 @@ const BottomModal = React.forwardRef<BottomSheetModal, IProps>(
       onCloseModal,
       isUpDown = true,
       handleStyle,
+      iconStyle,
     },
     ref,
   ) => {
@@ -53,16 +56,11 @@ const BottomModal = React.forwardRef<BottomSheetModal, IProps>(
         snapPoints={snapPoints}
         handleStyle={handleStyle}
         backdropComponent={props => <BottomSheetBackdrop {...props} />}
-        handleIndicatorStyle={tw` hidden `}>
-        <BottomSheetView style={tw`flex-1  bg-white`}>
+        handleIndicatorStyle={tw` hidden bg-red-400 `}>
+        <ThemedView style={tw`flex-1  `}>
           {!isUpDown ? null : (
             <>
-              <Entypo
-                name="chevron-thin-down"
-                size={16}
-                color="black"
-                style={tw` text-center`}
-              />
+              <Entypo name="chevron-thin-down" size={16} style={iconStyle} />
               <ThemedText
                 size="h4"
                 style={tw` text-center text-[14px] tracking-[1px]`}>
@@ -89,15 +87,11 @@ const BottomModal = React.forwardRef<BottomSheetModal, IProps>(
                   )?.current?.dismiss();
                   onCloseModal?.();
                 }}>
-                <EvilIcons
-                  name="close"
-                  size={24}
-                  style={tw` ${handleStyle ? ' text-white' : ' text-gray-700'}`}
-                />
+                <EvilIcons name="close" style={iconStyle} />
               </TouchableOpacity>
             </View>
           )}
-        </BottomSheetView>
+        </ThemedView>
       </BottomSheetModal>
     );
   },

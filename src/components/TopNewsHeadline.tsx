@@ -29,8 +29,10 @@ const TopNewsHeadline: React.FC<TopNewsHeadlineProps> = ({
 
   return (
     <View
-      style={tw`flex-row ${
-        isDarkMode ? ` border border-[${COLORS.primary}]` : 'shadow-md'
+      style={tw`flex-row m-1 ${
+        isDarkMode
+          ? ` border border-[${COLORS.primary}]`
+          : 'bg-white  shadow-md'
       } p-2 rounded-lg `}>
       <Image
         source={{uri: article.urlToImage}}

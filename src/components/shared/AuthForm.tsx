@@ -16,6 +16,7 @@ import tw from 'twrnc';
 import {z} from 'zod';
 import {COLORS} from '../../config/constants';
 import {authSchema, RootStackParamList} from '../../lib';
+import ThemedInput from './ThemedInput';
 import ThemedText from './ThemedText';
 import ThemedView from './ThemedView';
 
@@ -126,25 +127,18 @@ const AuthForm: React.FC<IAuthProps> = ({
               <ThemedText size="h4" style={tw`mb-2`}>
                 Email
               </ThemedText>
-              <View style={tw`relative h-[${moderateScale(55)}px]`}>
-                <View
-                  style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
-                  <Icon name="email" size={20} style={tw`${getIconColor()}`} />
-                </View>
-                <TextInput
-                  value={formData.email}
-                  onChangeText={text => handleChange('email', text)}
-                  placeholder="Enter your email"
-                  placeholderTextColor={
-                    isDarkMode ? COLORS.light.primary : COLORS.dark.primary
-                  }
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  onFocus={() => setFocusedField('email')}
-                  onBlur={() => setFocusedField(null)}
-                  style={getInputStyles(focusedField === 'email')}
-                />
-              </View>
+              <ThemedInput
+                value={formData.email}
+                onChangeText={text => handleChange('email', text)}
+                placeholder="Enter your email"
+                placeholderTextColor={
+                  isDarkMode ? COLORS.light.primary : COLORS.dark.primary
+                }
+                keyboardType="email-address"
+                autoCapitalize="none"
+                isDarkMode={isDarkMode}
+                iconName="email"
+              />
               {errors.email ? (
                 <ThemedText size="h4" style={tw`text-red-400 my-1`}>
                   {errors.email}
@@ -157,7 +151,19 @@ const AuthForm: React.FC<IAuthProps> = ({
               <ThemedText size="h4" style={tw`mb-2`}>
                 Password
               </ThemedText>
-              <View style={tw`relative h-[${moderateScale(55)}px]`}>
+              <ThemedInput
+                value={formData.password}
+                onChangeText={text => handleChange('password', text)}
+                placeholder="Enter your password"
+                placeholderTextColor={
+                  isDarkMode ? COLORS.light.primary : COLORS.dark.primary
+                }
+                autoCapitalize="none"
+                isDarkMode={isDarkMode}
+                iconName="lock"
+                isPasswordField
+              />
+              {/* <View style={tw`relative h-[${moderateScale(55)}px]`}>
                 <View
                   style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
                   <Icon name="lock" size={20} style={tw`${getIconColor()}`} />
@@ -186,7 +192,7 @@ const AuthForm: React.FC<IAuthProps> = ({
                     style={tw`${getIconColor()}`}
                   />
                 </TouchableOpacity>
-              </View>
+              </View> */}
               {errors.password ? (
                 <ThemedText size="h4" style={tw`my-1 text-red-400`}>
                   {errors.password}

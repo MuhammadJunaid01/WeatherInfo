@@ -1,28 +1,44 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {ScrollView, StatusBar, useColorScheme, View} from 'react-native';
+/* eslint-disable react/no-unstable-nested-components */
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {Image, ScrollView, StatusBar, useColorScheme, View} from 'react-native';
 import tw from '../../tailwind';
-import {ThemedText, ThemedView} from '../components';
+import {countries} from '../assets';
+import {BottomModal, ThemedInput, ThemedText, ThemedView} from '../components';
 import AnimatedLoader from '../components/shared/AnimatedLoader';
 import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
-import {COLORS, screenWidth} from '../config/constants';
+import {COLORS, moderateScale, screenWidth} from '../config/constants';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {
   useGetNewsSourcesQuery,
   useLazyGetNewsHeadLineQuery,
 } from '../services/apis/newApiSlice';
 import {setTheme} from '../services/features/themeSlice';
+interface IModals {
+  isCountryModalOPen: boolean;
+  isCategoryModalOPen: boolean;
+}
+const initialModalState: IModals = {
+  isCountryModalOPen: false,
+  isCategoryModalOPen: false,
+};
 interface IHeadlineQuery {
   country: string;
   page: number;
   pageSize: number;
+  search: string;
 }
 const initialHeadlineQuery: IHeadlineQuery = {
   country: 'us', // Example country
   page: 1,
   pageSize: 5,
+  search: '',
 };
 const HomeScreen = () => {
+  // ref
+  const modalRef = useRef<BottomSheetModal>(null);
+  const [modal, setModal] = useState<IModals>(initialModalState);
   const [headlineQuery, setHeadlineQuery] =
     useState<IHeadlineQuery>(initialHeadlineQuery);
   const [getHeadline, {data: headline, isLoading}] =
@@ -50,12 +66,27 @@ const HomeScreen = () => {
   }, [isDarkMode]);
   useEffect(() => {
     getHeadline({
-      country: 'us', // Example country
+      country: headlineQuery.country,
       page: 1,
       pageSize: 5,
     });
-  }, [getHeadline]);
+  }, [getHeadline, headlineQuery]);
   console.log('sources', sourcesData?.sources[0]);
+  const snapPoints = useMemo(() => ['10%', '40%', '66%'], []);
+  const onPressModalHandle = useCallback(
+    (key: keyof IModals, val: boolean) => {
+      if (val) {
+        modalRef.current?.present();
+      }
+      setModal(prev => ({...prev, [key]: val}));
+    },
+    [modalRef],
+  );
+  const onHandleSource = useCallback(
+    (key: keyof IHeadlineQuery, val: any) =>
+      setHeadlineQuery(prev => ({...prev, [key]: val})),
+    [],
+  );
   if (isLoading) {
     return (
       <ThemedView style={tw` flex-1`}>
@@ -70,7 +101,24 @@ const HomeScreen = () => {
   }
   return (
     <ThemedView style={tw` flex-1  p-3  gap-y-3`}>
-      <ThemedText size="h2">Home</ThemedText>
+      <View style={tw` flex-row items-center gap-x-3 flex-wrap w-full`}>
+        <View style={tw` flex-1`}>
+          <ThemedButton
+            onPress={() => onPressModalHandle('isCountryModalOPen', true)}
+            isDarkMode={isDarkMode}
+            size="h4">
+            Select Country
+          </ThemedButton>
+        </View>
+        <View style={tw` flex-1`}>
+          <ThemedButton
+            onPress={() => onPressModalHandle('isCategoryModalOPen', true)}
+            isDarkMode={isDarkMode}
+            size="h4">
+            Select Category
+          </ThemedButton>
+        </View>
+      </View>
       {headline && headline.articles.length > 0 && (
         <View style={tw`   w-full`}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -84,9 +132,63 @@ const HomeScreen = () => {
           </ScrollView>
         </View>
       )}
-      <ThemedButton isDarkMode={isDarkMode} size="h2">
-        hello
-      </ThemedButton>
+      <BottomModal
+        heights={snapPoints}
+        defaultIndex={2}
+        iconStyle={tw` ${
+          isDarkMode
+            ? `text-[${COLORS.dark.secondary}] text-center text-[22px]`
+            : ``
+        }`}
+        handleStyle={tw` ${isDarkMode ? `bg-[${COLORS.dark.primary}]` : ``}`}
+        ref={modalRef}
+        isUpDown={false}
+        onCloseModal={() => setModal(initialModalState)}
+        ModalBody={() => {
+          return (
+            <ThemedView style={tw` flex-1 mt-4 p-4  pb-11`}>
+              {modal.isCountryModalOPen && (
+                <View style={tw``}>
+                  <ThemedInput
+                    isDarkMode={isDarkMode}
+                    iconName={'search'}
+                    iconSize={40}
+                    containerStyle={tw` top-[14px]`}
+                  />
+                  {countries.map(({code, flag}, i) => {
+                    return (
+                      <ThemedButton
+                        isRenderView
+                        isDarkMode={isDarkMode}
+                        size="h5"
+                        onPress={() => {
+                          modalRef.current?.dismiss();
+                          onHandleSource('country', code);
+                        }}
+                        style={tw``}
+                        key={i}>
+                        <View
+                          style={tw` flex-row gap-x-3 justify-center items-center`}>
+                          <ThemedText size="h4">
+                            {code.toUpperCase()}
+                          </ThemedText>
+                          <Image
+                            source={{uri: flag}}
+                            style={tw` h-[${moderateScale(
+                              20,
+                            )}px] w-[${moderateScale(20)}px]`}
+                            resizeMode="contain"
+                          />
+                        </View>
+                      </ThemedButton>
+                    );
+                  })}
+                </View>
+              )}
+            </ThemedView>
+          );
+        }}
+      />
     </ThemedView>
   );
 };
