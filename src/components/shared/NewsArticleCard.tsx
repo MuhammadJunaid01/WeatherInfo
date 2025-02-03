@@ -2,7 +2,7 @@ import React from 'react';
 import {Linking, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import tw from 'twrnc';
-import {screenHeight} from '../../config/constants';
+import {COLORS, screenHeight} from '../../config/constants';
 import {INewsArticle} from '../../lib/shared.interface';
 import ThemedText from './ThemedText';
 
@@ -48,7 +48,7 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
   return (
     <View
       style={tw` rounded-lg ${
-        isDarkMode ? ' border border-green-400' : 'shadow'
+        isDarkMode ? `border border-[${COLORS.primary}]` : 'shadow'
       }  m-1 mb-4  h-[${item_height}px] overflow-hidden`}>
       <View style={tw`relative`}>
         <FastImage

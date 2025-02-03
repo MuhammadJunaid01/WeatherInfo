@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import tw from '../../tailwind';
+import {COLORS} from '../config/constants';
 import {Theme, WeatherAPIResponse} from '../lib';
 import {ThemedText, WeatherInfoCard} from './shared';
 interface IProps {
@@ -8,6 +9,8 @@ interface IProps {
   theme?: Theme;
 }
 const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
+  const isDarkMode = useMemo(() => theme === 'dark', [theme]);
+
   const kelvinToCelsius = (kelvin?: number) => {
     if (!kelvin) {
       return 'N/A';
@@ -26,21 +29,15 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
       hour12: false,
     });
   };
-  const generateBgColor = useMemo(() => {
-    switch (theme) {
-      case 'light':
-        return 'bg-blue-500';
-      case 'dark':
-        return;
-      default:
-        break;
-    }
-  }, [theme]);
+
   return (
     <View style={tw` flex-1  bg-transparent`}>
       <ScrollView style={tw`flex-1 `}>
         {/* Header Section */}
-        <View style={tw`p-6 bg-blue-500 rounded-lg`}>
+        <View
+          style={tw`p-6  ${
+            isDarkMode ? ` border border-[${COLORS.primary}]` : 'bg-blue-500'
+          } rounded-lg`}>
           {data && (
             <ThemedText size="h2" style={tw``}>
               {data.name}, {data.sys?.country}
@@ -59,14 +56,17 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
         <View style={tw`p-4`}>
           <View style={tw`flex-row flex-wrap justify-between`}>
             <WeatherInfoCard
+              isDarkMode={isDarkMode}
               label="Feels Like"
               value={kelvinToCelsius(data?.main?.feels_like)}
             />
             <WeatherInfoCard
+              isDarkMode={isDarkMode}
               label="Min Temp"
               value={kelvinToCelsius(data?.main?.temp_min)}
             />
             <WeatherInfoCard
+              isDarkMode={isDarkMode}
               label="Max Temp"
               value={kelvinToCelsius(data?.main?.temp_max)}
             />
@@ -74,21 +74,27 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
 
           {/* Additional Weather Details */}
           <View style={tw`mt-4`}>
-            <Text style={tw`text-xl font-semibold mb-2 px-2`}>Details</Text>
+            <ThemedText size="h3" style={tw` mb-1 px-2`}>
+              Details
+            </ThemedText>
             <View style={tw`flex-row flex-wrap justify-between`}>
               <WeatherInfoCard
+                isDarkMode={isDarkMode}
                 label="Humidity"
                 value={`${data?.main?.humidity ?? 'N/A'}%`}
               />
               <WeatherInfoCard
+                isDarkMode={isDarkMode}
                 label="Wind Speed"
                 value={`${data?.wind?.speed ?? 'N/A'} m/s`}
               />
               <WeatherInfoCard
+                isDarkMode={isDarkMode}
                 label="Pressure"
                 value={`${data?.main?.pressure ?? 'N/A'} hPa`}
               />
               <WeatherInfoCard
+                isDarkMode={isDarkMode}
                 label="Visibility"
                 value={`${(data?.visibility ?? 0) / 1000} km`}
               />
@@ -100,10 +106,12 @@ const WeatherInfo: React.FC<IProps> = ({data, theme}) => {
             <Text style={tw`text-xl font-semibold mb-2 px-2`}>Sun Times</Text>
             <View style={tw`flex-row justify-between`}>
               <WeatherInfoCard
+                isDarkMode={isDarkMode}
                 label="Sunrise"
                 value={formatTime(data?.sys?.sunrise)}
               />
               <WeatherInfoCard
+                isDarkMode={isDarkMode}
                 label="Sunset"
                 value={formatTime(data?.sys?.sunset)}
               />

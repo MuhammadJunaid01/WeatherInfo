@@ -55,7 +55,7 @@ const DrawerNavigator = () => {
         header: props => (
           <CustomDrawerHeader
             {...props}
-            title="Dashboard"
+            title="Daily News"
             showNotification={true}
             notificationCount={5}
             user={user}

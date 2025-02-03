@@ -1,12 +1,12 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 import tw from '../../tailwind';
+import {ThemedText, ThemedView} from '../components';
 
 const NotificationScreen = () => {
   return (
-    <View style={tw` flex-1 bg-white`}>
-      <Text>NotificationScreen</Text>
-    </View>
+    <ThemedView style={tw` flex-1  p-3`}>
+      <ThemedText size="h3">NotificationScreen</ThemedText>
+    </ThemedView>
   );
 };
 

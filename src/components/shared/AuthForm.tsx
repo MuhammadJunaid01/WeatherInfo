@@ -14,11 +14,12 @@ import {moderateScale} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import tw from 'twrnc';
 import {z} from 'zod';
+import {COLORS} from '../../config/constants';
 import {authSchema, RootStackParamList} from '../../lib';
 import ThemedText from './ThemedText';
+import ThemedView from './ThemedView';
 
 // Define validation schema using Zod
-
 type AuthFormData = z.infer<typeof authSchema>;
 
 interface IAuthProps {
@@ -27,6 +28,7 @@ interface IAuthProps {
   isLoading?: boolean;
   errMessage?: string | null;
   isSignUp: boolean;
+  isDarkMode: boolean;
 }
 
 const AuthForm: React.FC<IAuthProps> = ({
@@ -35,15 +37,19 @@ const AuthForm: React.FC<IAuthProps> = ({
   isLoading,
   errMessage,
   isSignUp,
+  isDarkMode,
 }) => {
   const [formData, setFormData] = useState<AuthFormData>({
     email: '',
     password: '',
   });
-  const [errors, setErrors] = useState<{
-    [key in keyof AuthFormData]?: string;
-  }>({});
+  const [errors, setErrors] = useState<{[key in keyof AuthFormData]?: string}>(
+    {},
+  );
   const [showPassword, setShowPassword] = useState(false);
+  const [focusedField, setFocusedField] = useState<'email' | 'password' | null>(
+    null,
+  );
 
   const validateForm = () => {
     try {
@@ -81,8 +87,25 @@ const AuthForm: React.FC<IAuthProps> = ({
     setShowPassword(!showPassword);
   };
 
+  const getInputStyles = (isFocused: boolean) => {
+    const baseStyle = `h-full rounded-lg px-10 py-3 text-base ${
+      isFocused ? 'border-2' : ''
+    }`;
+    return tw`${baseStyle} ${
+      isFocused
+        ? isDarkMode
+          ? 'border-blue-500'
+          : 'border-blue-700'
+        : isDarkMode
+        ? 'bg-gray-800 text-white'
+        : 'bg-gray-50 text-gray-800'
+    }`;
+  };
+
+  const getIconColor = () => (isDarkMode ? 'text-white' : 'text-gray-400');
+
   return (
-    <View style={tw`flex-1 bg-white`}>
+    <ThemedView style={tw`flex-1`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={tw`flex-1`}>
@@ -92,35 +115,38 @@ const AuthForm: React.FC<IAuthProps> = ({
           <View style={tw`px-4`}>
             {/* Header */}
             <View style={tw`mb-8`}>
-              <ThemedText size="h1" color="text-gray-800" style={tw`  mb-1`}>
+              <ThemedText size="h1" style={tw`mb-1`}>
                 Create Account
               </ThemedText>
-              <ThemedText size="h5" style={tw``}>
-                Sign up to get started!
-              </ThemedText>
+              <ThemedText size="h5">Sign up to get started!</ThemedText>
             </View>
 
             {/* Email Input */}
             <View style={tw`mb-4`}>
-              <ThemedText size="h4" color="text-gray-700" style={tw` mb-2 `}>
+              <ThemedText size="h4" style={tw`mb-2`}>
                 Email
               </ThemedText>
-              <View style={tw`relative h-[${moderateScale(55)}px] `}>
+              <View style={tw`relative h-[${moderateScale(55)}px]`}>
                 <View
                   style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
-                  <Icon name="email" size={20} style={tw`text-gray-400`} />
+                  <Icon name="email" size={20} style={tw`${getIconColor()}`} />
                 </View>
                 <TextInput
                   value={formData.email}
                   onChangeText={text => handleChange('email', text)}
                   placeholder="Enter your email"
+                  placeholderTextColor={
+                    isDarkMode ? COLORS.light.primary : COLORS.dark.primary
+                  }
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  style={tw`bg-gray-50 h-full rounded-lg px-10 py-3 text-gray-800`}
+                  onFocus={() => setFocusedField('email')}
+                  onBlur={() => setFocusedField(null)}
+                  style={getInputStyles(focusedField === 'email')}
                 />
               </View>
               {errors.email ? (
-                <ThemedText size="h4" color="text-red-400" style={tw`  my-1`}>
+                <ThemedText size="h4" style={tw`text-red-400 my-1`}>
                   {errors.email}
                 </ThemedText>
               ) : null}
@@ -128,20 +154,25 @@ const AuthForm: React.FC<IAuthProps> = ({
 
             {/* Password Input */}
             <View style={tw`mb-6`}>
-              <ThemedText size="h4" color="text-gray-700" style={tw` mb-2 `}>
+              <ThemedText size="h4" style={tw`mb-2`}>
                 Password
               </ThemedText>
-              <View style={tw`relative h-[${moderateScale(55)}px] `}>
+              <View style={tw`relative h-[${moderateScale(55)}px]`}>
                 <View
                   style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
-                  <Icon name="lock" size={20} style={tw`text-gray-400`} />
+                  <Icon name="lock" size={20} style={tw`${getIconColor()}`} />
                 </View>
                 <TextInput
                   value={formData.password}
                   onChangeText={text => handleChange('password', text)}
                   placeholder="Enter your password"
+                  placeholderTextColor={
+                    isDarkMode ? COLORS.light.primary : COLORS.dark.primary
+                  }
                   secureTextEntry={!showPassword}
-                  style={tw`bg-gray-50 h-full rounded-lg px-10 py-3 text-gray-800`}
+                  onFocus={() => setFocusedField('password')}
+                  onBlur={() => setFocusedField(null)}
+                  style={getInputStyles(focusedField === 'password')}
                 />
                 <TouchableOpacity
                   hitSlop={{right: 20, top: 20, left: 20, bottom: 20}}
@@ -152,12 +183,12 @@ const AuthForm: React.FC<IAuthProps> = ({
                   <Icon
                     name={showPassword ? 'visibility-off' : 'visibility'}
                     size={20}
-                    style={tw`text-gray-400`}
+                    style={tw`${getIconColor()}`}
                   />
                 </TouchableOpacity>
               </View>
               {errors.password ? (
-                <ThemedText size="h4" color="text-red-400" style={tw`  my-1`}>
+                <ThemedText size="h4" style={tw`my-1 text-red-400`}>
                   {errors.password}
                 </ThemedText>
               ) : null}
@@ -166,20 +197,20 @@ const AuthForm: React.FC<IAuthProps> = ({
             {/* Password Requirements */}
             {isSignUp && (
               <View style={tw`mb-6`}>
-                <Text style={tw`text-gray-500 text-sm`}>Password must:</Text>
-                <Text style={tw`text-gray-500 text-sm`}>
+                <ThemedText size="h5" style={tw``}>
+                  Password must:
+                </ThemedText>
+                <ThemedText size="h5">
                   • Be at least 6 characters long
-                </Text>
-                <Text style={tw`text-gray-500 text-sm`}>
+                </ThemedText>
+                <ThemedText size="h5">
                   • Contain at least one uppercase letter
-                </Text>
-                <Text style={tw`text-gray-500 text-sm`}>
-                  • Contain at least one number
-                </Text>
+                </ThemedText>
+                <ThemedText size="h5">• Contain at least one number</ThemedText>
               </View>
             )}
             {errMessage && (
-              <ThemedText size="h4" color="text-red-400" style={tw`  my-1`}>
+              <ThemedText size="h4" style={tw`my-1 text-red-400`}>
                 {errMessage}
               </ThemedText>
             )}
@@ -187,14 +218,17 @@ const AuthForm: React.FC<IAuthProps> = ({
             <TouchableOpacity
               disabled={isLoading}
               onPress={handleSignUp}
-              style={tw`bg-blue-500 rounded-lg py-4 mb-4`}>
+              style={tw`${
+                isDarkMode ? 'bg-blue-700' : 'bg-blue-500'
+              } rounded-lg py-4 mb-4`}>
               {isLoading ? (
                 <ActivityIndicator color={'white'} />
               ) : (
                 <ThemedText
                   size="h2"
-                  color="text-white"
-                  style={tw` text-center`}>
+                  style={tw`${
+                    isDarkMode ? 'text-white' : 'text-gray-50'
+                  } text-center`}>
                   Sign Up
                 </ThemedText>
               )}
@@ -219,7 +253,7 @@ const AuthForm: React.FC<IAuthProps> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </ThemedView>
   );
 };
 
