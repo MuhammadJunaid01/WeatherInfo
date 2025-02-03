@@ -14,7 +14,6 @@ const baseQueryWithNetworkCheck: BaseQueryFn = async (
   extraOptions,
 ) => {
   const result = await baseQuery(args, api, extraOptions);
-  console.log('BaseQuery Result:', result);
   return result;
 };
 

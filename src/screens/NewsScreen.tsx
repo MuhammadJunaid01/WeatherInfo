@@ -1,15 +1,18 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
+import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {ActivityIndicator, FlatList, ListRenderItem, View} from 'react-native';
+import {ActivityIndicator, FlatList, ListRenderItem} from 'react-native';
 import tw from 'twrnc';
 import {Loader, NewsArticleCard, ThemedView} from '../components';
 import {screenHeight} from '../config/constants';
 import {useAppSelector} from '../hooks/useReduxHooks';
+import {TabParamList} from '../lib';
 import {INewsArticle} from '../lib/shared.interface';
 import {useLazyGetNewsQuery} from '../services/apis/newApiSlice';
 const ITEM_HEIGHT = screenHeight * 0.89;
-const NewsScreen = () => {
+type Props = StackScreenProps<TabParamList, 'News'>;
+const NewsScreen: React.FC<Props> = () => {
   const {theme} = useAppSelector(state => state.theme);
   const isDarkMode = useMemo(() => theme === 'dark', [theme]);
   const [articles, setArticles] = useState<INewsArticle[]>([]);
