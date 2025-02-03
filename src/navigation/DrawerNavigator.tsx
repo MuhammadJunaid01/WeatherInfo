@@ -40,7 +40,7 @@ const DrawerNavigator = () => {
 
   const {activeItemColor, inactiveItemColor, drawerBackgroundColor} = useMemo(
     () => ({
-      activeItemColor: COLORS.primary,
+      activeItemColor: theme === 'dark' ? COLORS.primary : 'white',
       inactiveItemColor:
         theme === 'dark' ? COLORS.dark.secondary : COLORS.light.secondary,
       drawerBackgroundColor:

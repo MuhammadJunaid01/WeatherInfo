@@ -1,26 +1,17 @@
 /* eslint-disable react/no-unstable-nested-components */
-import BottomSheet, {
+import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetScrollView,
-  BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import {styles} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/BottomSheetFlashList';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {ScrollView, StatusBar, useColorScheme, View} from 'react-native';
 import tw from '../../tailwind';
 import {ThemedInput, ThemedText, ThemedView} from '../components';
 import AnimatedLoader from '../components/shared/AnimatedLoader';
 import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
-import {COLORS, moderateScale, screenWidth} from '../config/constants';
+import {COLORS, screenWidth} from '../config/constants';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {
   useGetNewsSourcesQuery,
@@ -215,66 +206,6 @@ const HomeScreen = () => {
           )}
         </ThemedView>
       </BottomSheetModal>
-      {/* <BottomModal
-        heights={snapPoints}
-        defaultIndex={2}
-        iconStyle={tw` ${
-          isDarkMode
-            ? `text-[${COLORS.dark.secondary}] text-center text-[22px]`
-            : ``
-        }`}
-        handleStyle={tw` ${isDarkMode ? `bg-[${COLORS.dark.primary}]` : ``}`}
-        ref={modalRef}
-        isUpDown={false}
-        onCloseModal={() => setModal(initialModalState)}
-        ModalBody={() => {
-          return (
-            <ThemedView style={tw` flex-1 mt-4 p-4  pb-11`}>
-              {modal.isCountryModalOPen && (
-                <View style={tw``}>
-                  <ThemedInput
-                    onChangeText={text => {
-                      updateSearchQuery(text);
-                    }}
-                    isDarkMode={isDarkMode}
-                    iconName={'search'}
-                    iconSize={40}
-                    containerStyle={tw` top-[14px]`}
-                  />
-                  {filteredCountries.map(({code, flag}, i) => {
-                    return (
-                      <ThemedButton
-                        isRenderView
-                        isDarkMode={isDarkMode}
-                        size="h5"
-                        onPress={() => {
-                          modalRef.current?.dismiss();
-                          onHandleSource('country', code);
-                        }}
-                        style={tw``}
-                        key={i}>
-                        <View
-                          style={tw` flex-row gap-x-3 justify-center items-center`}>
-                          <ThemedText size="h4">
-                            {code.toUpperCase()}
-                          </ThemedText>
-                          <Image
-                            source={{uri: flag}}
-                            style={tw` h-[${moderateScale(
-                              20,
-                            )}px] w-[${moderateScale(20)}px]`}
-                            resizeMode="contain"
-                          />
-                        </View>
-                      </ThemedButton>
-                    );
-                  })}
-                </View>
-              )}
-            </ThemedView>
-          );
-        }}
-      /> */}
     </ThemedView>
   );
 };
