@@ -1,9 +1,10 @@
+import NetInfo from '@react-native-community/netinfo';
 import {apiSlice} from '../../services/apis/apiSlice';
 
 export const customNetworkMiddleware =
-  (store: any) => (next: any) => (action: any) => {
-    const state = store.getState();
-    const isConnected = state.network.isConnected;
+  (_store: any) => (next: any) => async (action: any) => {
+    const netInfo = await NetInfo.fetch();
+    const isConnected = netInfo.isConnected;
 
     // If network is unavailable, block the request and return
     if (!isConnected && action.type.startsWith(apiSlice.reducerPath)) {

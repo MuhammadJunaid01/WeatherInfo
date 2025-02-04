@@ -46,7 +46,7 @@ interface IHeadlineQuery {
 const initialHeadlineQuery: IHeadlineQuery = {
   country: 'us', // Example country
   page: 1,
-  pageSize: 5,
+  pageSize: 20,
   search: '',
   category: '',
 };
@@ -84,7 +84,7 @@ const HomeScreen = () => {
     getHeadline({
       country: headlineQuery.country,
       page: 1,
-      pageSize: 5,
+      pageSize: headlineQuery.pageSize,
     });
   }, [getHeadline, headlineQuery]);
   const snapPoints = useMemo(() => ['10%', '40%', '86%'], []);
