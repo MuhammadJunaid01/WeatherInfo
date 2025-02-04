@@ -1,5 +1,6 @@
 import NetInfo from '@react-native-community/netinfo';
 import {apiSlice} from '../../services/apis/apiSlice';
+import {showToast} from '../utils';
 
 export const customNetworkMiddleware =
   (_store: any) => (next: any) => async (action: any) => {
@@ -8,7 +9,7 @@ export const customNetworkMiddleware =
 
     // If network is unavailable, block the request and return
     if (!isConnected && action.type.startsWith(apiSlice.reducerPath)) {
-      console.warn('Network unavailable. Request blocked:', action.type);
+      showToast('Network unavailable. Returning cached data.');
       return;
     }
 

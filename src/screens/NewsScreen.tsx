@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
+import {useNetInfo} from '@react-native-community/netinfo'; // Import useNetInfo
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, FlatList, ListRenderItem} from 'react-native';
@@ -11,22 +12,36 @@ import {useAppSelector} from '../hooks/useReduxHooks';
 import {TabParamList} from '../lib';
 import {INewsArticle} from '../lib/shared.interface';
 import {useLazyGetNewsQuery} from '../services/apis/newApiSlice';
+
 const ITEM_HEIGHT = screenHeight * 0.89;
+
 type Props = StackScreenProps<TabParamList, 'News'>;
+
 const NewsScreen: React.FC<Props> = () => {
   const {theme} = useAppSelector(state => state.theme);
   const isDarkMode = useMemo(() => theme === 'dark', [theme]);
   const [articles, setArticles] = useState<INewsArticle[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const {isConnected} = useNetInfo(); // Get network connection state
+  const {articles: articleSate} = useAppSelector(state => state.news); // Redux state for articles
 
   const [triggerGetNews, {data, isFetching, isLoading, error}] =
     useLazyGetNewsQuery();
-  console.log('error', error);
+
   useEffect(() => {
-    // Fetch the first page of articles when the component mounts
-    triggerGetNews({query: 'bitcoin', page: 1, pageSize: 10});
-  }, [triggerGetNews]);
+    if (isConnected) {
+      // Only fetch if online
+      triggerGetNews({query: 'bitcoin', page: currentPage, pageSize: 10});
+    } else if (!isConnected && articleSate.length > 0) {
+      // If offline, use Redux state
+      setArticles(articleSate);
+      setHasMore(true); // No need for pagination when using cached articles
+    }
+  }, [isConnected, currentPage, triggerGetNews, articleSate]);
+
   useEffect(() => {
     if (data?.articles) {
       setArticles(prev => [...prev, ...data.articles]);
@@ -35,12 +50,12 @@ const NewsScreen: React.FC<Props> = () => {
   }, [data]);
 
   const loadMore = useCallback(() => {
-    if (!isFetching && hasMore) {
+    if (!isFetching && hasMore && !isRefreshing && isConnected) {
+      // Only load more if connected
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
-      triggerGetNews({page: nextPage, pageSize: 10});
     }
-  }, [currentPage, hasMore, isFetching, triggerGetNews]);
+  }, [currentPage, hasMore, isFetching, isRefreshing, isConnected]);
 
   const renderItem: ListRenderItem<INewsArticle> = useCallback(
     ({item}) => (
@@ -72,6 +87,25 @@ const NewsScreen: React.FC<Props> = () => {
       <ActivityIndicator style={tw`my-4`} size="large" color="#0000ff" />
     ) : null;
 
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setArticles([]); // Clear articles on refresh
+    setCurrentPage(1); // Reset page to 1
+    setHasMore(true); // Ensure more pages can be fetched
+    if (isConnected) {
+      triggerGetNews({query: 'bitcoin', page: 1, pageSize: 10});
+    } else {
+      setArticles(articleSate); // Use Redux state if offline
+      setIsRefreshing(false); // End refresh immediately if offline
+    }
+  };
+
+  useEffect(() => {
+    if (!isFetching && !isRefreshing) {
+      setIsRefreshing(false); // Reset refreshing state when fetching is complete
+    }
+  }, [isFetching, isRefreshing]);
+
   if (isLoading && !articles.length) {
     return (
       <ThemedView style={tw` flex-1 items-center justify-center`}>
@@ -82,7 +116,7 @@ const NewsScreen: React.FC<Props> = () => {
 
   return (
     <ThemedView style={tw`flex-1 `}>
-      {error && 'status' in error && error.status === 429 ? (
+      {error && 'status' in error && error.status === 426 ? (
         <ApiError error={error} />
       ) : (
         <FlatList
@@ -94,13 +128,8 @@ const NewsScreen: React.FC<Props> = () => {
           ListFooterComponent={ListFooter}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
-          refreshing={isFetching}
-          onRefresh={() => {
-            setArticles([]);
-            setCurrentPage(1);
-            setHasMore(true);
-            triggerGetNews({query: 'bitcoin', page: 1, pageSize: 10});
-          }}
+          refreshing={isRefreshing}
+          onRefresh={handleRefresh}
           initialNumToRender={10}
           maxToRenderPerBatch={10}
           windowSize={10}

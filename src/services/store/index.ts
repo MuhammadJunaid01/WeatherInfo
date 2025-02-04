@@ -40,7 +40,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore redux-persist actions
       },
-    }).concat(apiSlice.middleware),
+    }).concat(apiSlice.middleware, customNetworkMiddleware),
   devTools: process.env.NODE_ENV !== 'production',
 });
 

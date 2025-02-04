@@ -15,7 +15,7 @@ const ApiError: React.FC<IProps> = ({error}) => {
 
   const ref = useRef<BottomSheetModal>(null);
 
-  const isRateLimited = error?.status === 429;
+  const isRateLimited = error?.status === 429 || 426;
   const isServerError = error?.status >= 500 && error?.status < 600;
   const defaultErrorMessage = 'An unexpected error occurred. Please try again.';
 

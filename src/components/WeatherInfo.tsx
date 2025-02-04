@@ -1,11 +1,11 @@
 import React, {useMemo} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import tw from '../../tailwind';
 import {COLORS} from '../config/constants';
 import {Theme, WeatherAPIResponse} from '../lib';
 import {ThemedText, WeatherInfoCard} from './shared';
 interface IProps {
-  data?: WeatherAPIResponse;
+  data?: WeatherAPIResponse | null;
   theme?: Theme;
 }
 const WeatherInfo: React.FC<IProps> = ({data, theme}) => {

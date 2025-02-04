@@ -1,20 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
-import BottomSheet, {
+import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetScrollView,
-  BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import {styles} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/BottomSheetFlashList';
+import {useNetInfo} from '@react-native-community/netinfo';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {Image, ScrollView, StatusBar, useColorScheme, View} from 'react-native';
 import tw from '../../tailwind';
 import {categories, countries} from '../assets';
 import {ThemedInput, ThemedText, ThemedView} from '../components';
@@ -24,10 +16,7 @@ import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
 import {COLORS, moderateScale, screenWidth} from '../config/constants';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
-import {
-  useGetNewsSourcesQuery,
-  useLazyGetNewsHeadLineQuery,
-} from '../services/apis/newApiSlice';
+import {useLazyGetNewsHeadLineQuery} from '../services/apis/newApiSlice';
 import {setTheme} from '../services/features/themeSlice';
 interface IModals {
   isCountryModalOPen: boolean;
@@ -52,14 +41,16 @@ const initialHeadlineQuery: IHeadlineQuery = {
   category: '',
 };
 const HomeScreen = () => {
+  //netInfo
+  const {isConnected} = useNetInfo();
   // ref
   const modalRef = useRef<BottomSheetModal>(null);
   const [modal, setModal] = useState<IModals>(initialModalState);
+  const {articles} = useAppSelector(state => state.headline);
   const [headlineQuery, setHeadlineQuery] =
     useState<IHeadlineQuery>(initialHeadlineQuery);
-  const [getHeadline, {data: headline, isLoading, error}] =
+  const [getHeadline, {data: headlineData, isLoading, error}] =
     useLazyGetNewsHeadLineQuery();
-  const {data: sourcesData} = useGetNewsSourcesQuery({category: 'general'});
   const dispatch = useAppDispatch();
   const {activeTheme, theme} = useAppSelector(state => state.theme);
   const isDarkMode = useMemo(() => theme === 'dark', [theme]);
@@ -82,12 +73,14 @@ const HomeScreen = () => {
     );
   }, [isDarkMode]);
   useEffect(() => {
-    getHeadline({
-      country: headlineQuery.country,
-      page: 1,
-      pageSize: headlineQuery.pageSize,
-    });
-  }, [getHeadline, headlineQuery]);
+    if (isConnected) {
+      getHeadline({
+        country: headlineQuery.country,
+        page: 1,
+        pageSize: headlineQuery.pageSize,
+      });
+    }
+  }, [getHeadline, headlineQuery, isConnected]);
   const snapPoints = useMemo(() => ['10%', '40%', '86%'], []);
 
   const onPressModalHandle = useCallback((key: keyof IModals, val: boolean) => {
@@ -116,6 +109,15 @@ const HomeScreen = () => {
         country.code.toLowerCase() === headlineQuery.search.toLowerCase(),
     );
   }, [headlineQuery.search]);
+  const headline = useMemo(() => {
+    if (!isConnected) {
+      return {articles};
+    }
+    return headlineData && headlineData?.articles?.length > 0
+      ? headlineData
+      : null;
+  }, [articles, headlineData, isConnected]);
+
   if (isLoading) {
     return (
       <ThemedView style={tw` flex-1`}>
@@ -128,6 +130,7 @@ const HomeScreen = () => {
       </ThemedView>
     );
   }
+
   return (
     <ThemedView style={tw` flex-1  p-3  gap-y-3`}>
       <View style={tw` flex-row items-center gap-x-3 flex-wrap w-full`}>
@@ -158,10 +161,10 @@ const HomeScreen = () => {
         <ApiError error={error} />
       ) : (
         headline &&
-        headline.articles.length > 0 && (
+        headline?.articles?.length > 0 && (
           <View style={tw`   w-full`}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {headline.articles.map((head, i) => {
+              {headline.articles?.map((head, i) => {
                 return (
                   <View style={tw` w-[${screenWidth * 0.67}px] mr-3`} key={i}>
                     <TopNewsHeadline isDarkMode={isDarkMode} article={head} />

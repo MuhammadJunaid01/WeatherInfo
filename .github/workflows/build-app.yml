@@ -1,0 +1,67 @@
+name: Build Android App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Install Java
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+
+      # Validate Gradle Wrapper
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      # Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: |
+          npm i -g corepack
+          yarn install
+
+      # Make Gradle Wrapper Executable
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x android/gradlew
+
+      # Clean previous Gradle build
+      - name: Clean Gradle Build
+        run: |
+          cd android
+          ./gradlew clean
+
+      # Build Release APK
+      - name: Build Release APK
+        env:
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+      # Upload APK artifact
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 1

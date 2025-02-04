@@ -1,6 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
 import {useNetInfo} from '@react-native-community/netinfo';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import tw from '../../tailwind';
 import {Loader, ThemedText, ThemedView, WeatherInfo} from '../components';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
@@ -9,6 +9,7 @@ import {setWeatherStatus} from '../services/features/weatherSlice';
 
 const WeatherInfoScreen = () => {
   const {isConnected} = useNetInfo();
+  const {weather} = useAppSelector(state => state.weather);
   const dispatch = useAppDispatch();
   const {theme} = useAppSelector(state => state.theme);
   const {status} = useAppSelector(state => state.weather);
@@ -39,6 +40,12 @@ const WeatherInfoScreen = () => {
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   }, [dispatch]);
+  const transformData = useMemo(() => {
+    if (!isConnected) {
+      return weather;
+    }
+    return data;
+  }, [data, isConnected, weather]);
   if (isLoading || status === 'loading') {
     return (
       <ThemedView style={tw` flex-1 items-center justify-center`}>
@@ -48,8 +55,10 @@ const WeatherInfoScreen = () => {
   }
   return (
     <ThemedView style={tw` flex-1  p-3 `}>
-      <ThemedText size="h1">isConnected:{isConnected}</ThemedText>
-      <WeatherInfo data={data} theme={theme} />
+      <ThemedText size="h1">
+        isConnected:{isConnected ? 'connected' : 'not connected'}
+      </ThemedText>
+      <WeatherInfo data={transformData} theme={theme} />
     </ThemedView>
   );
 };
