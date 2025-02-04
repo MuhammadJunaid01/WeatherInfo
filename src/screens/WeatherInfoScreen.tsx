@@ -1,4 +1,5 @@
 import Geolocation from '@react-native-community/geolocation';
+import {useNetInfo} from '@react-native-community/netinfo';
 import React, {useEffect, useState} from 'react';
 import tw from '../../tailwind';
 import {Loader, ThemedText, ThemedView, WeatherInfo} from '../components';
@@ -7,8 +8,7 @@ import {useGetWeatherQuery} from '../services/apis/weatherApiSlice';
 import {setWeatherStatus} from '../services/features/weatherSlice';
 
 const WeatherInfoScreen = () => {
-  const {isConnected} = useAppSelector(state => state.network);
-
+  const {isConnected} = useNetInfo();
   const dispatch = useAppDispatch();
   const {theme} = useAppSelector(state => state.theme);
   const {status} = useAppSelector(state => state.weather);

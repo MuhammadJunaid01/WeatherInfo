@@ -49,7 +49,7 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
     <View
       style={tw` rounded-lg ${
         isDarkMode ? `border border-[${COLORS.primary}]` : 'shadow'
-      }  m-1 mb-4  h-[${item_height}px] overflow-hidden`}>
+      }  m-1 mb-4   `}>
       <View style={tw`relative`}>
         <FastImage
           source={{

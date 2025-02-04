@@ -19,6 +19,7 @@ import tw from '../../tailwind';
 import {categories, countries} from '../assets';
 import {ThemedInput, ThemedText, ThemedView} from '../components';
 import AnimatedLoader from '../components/shared/AnimatedLoader';
+import ApiError from '../components/shared/ApiError';
 import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
 import {COLORS, moderateScale, screenWidth} from '../config/constants';
@@ -56,7 +57,7 @@ const HomeScreen = () => {
   const [modal, setModal] = useState<IModals>(initialModalState);
   const [headlineQuery, setHeadlineQuery] =
     useState<IHeadlineQuery>(initialHeadlineQuery);
-  const [getHeadline, {data: headline, isLoading}] =
+  const [getHeadline, {data: headline, isLoading, error}] =
     useLazyGetNewsHeadLineQuery();
   const {data: sourcesData} = useGetNewsSourcesQuery({category: 'general'});
   const dispatch = useAppDispatch();
@@ -153,19 +154,25 @@ const HomeScreen = () => {
           </ThemedButton>
         </View>
       </View>
-      {headline && headline.articles.length > 0 && (
-        <View style={tw`   w-full`}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {headline.articles.map((head, i) => {
-              return (
-                <View style={tw` w-[${screenWidth * 0.67}px] mr-3`} key={i}>
-                  <TopNewsHeadline isDarkMode={isDarkMode} article={head} />
-                </View>
-              );
-            })}
-          </ScrollView>
-        </View>
+      {error && 'status' in error && error.status === 429 ? (
+        <ApiError error={error} />
+      ) : (
+        headline &&
+        headline.articles.length > 0 && (
+          <View style={tw`   w-full`}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {headline.articles.map((head, i) => {
+                return (
+                  <View style={tw` w-[${screenWidth * 0.67}px] mr-3`} key={i}>
+                    <TopNewsHeadline isDarkMode={isDarkMode} article={head} />
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )
       )}
+
       <BottomSheetModal
         onChange={index => {
           if (index === -1) {

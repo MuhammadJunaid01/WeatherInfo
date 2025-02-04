@@ -9,16 +9,6 @@ const weatherApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getWeather: builder.query<WeatherAPIResponse, {lat: number; lon: number}>({
       queryFn: async ({lat, lon}, _queryApi, _extraOptions, baseQuery) => {
-        const state = _queryApi.getState() as RootState;
-        const weatherInfo = state.weather.weather;
-        if (!state.network.isConnected) {
-          return {
-            data: {
-              ...weatherInfo,
-            },
-          };
-        }
-
         try {
           const response = await baseQuery({
             url: `${WEATHER_API_URL}?lat=${lat}&lon=${lon}&appid=15d3bf5add6ee893a41a7476cfa10ba6&units=metric`,

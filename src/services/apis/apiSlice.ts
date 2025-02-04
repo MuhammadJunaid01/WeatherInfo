@@ -5,15 +5,14 @@ import {RootState} from '../store'; // Adjust the path to your store
 
 // Define the API
 export const apiSlice = createApi({
-  reducerPath: 'api',
+  tagTypes: ['newsSources', 'newsHeadlines', 'news'],
   baseQuery: async (args, api, extraOptions) => {
     // Check network status using NetInfo
     const netInfo = await NetInfo.fetch();
     const isConnected = netInfo.isConnected;
 
-    const endpoint = typeof args === 'string' ? args : args.url; // Extract endpoint from args
-    console.log('ENDPOINT', endpoint);
-    // If offline, return cached or local Redux state data
+    const endpoint = typeof args === 'string' ? args : args.url;
+    // If offline, return cached  data
     if (!isConnected) {
       const state = api.getState() as RootState;
 
@@ -30,7 +29,7 @@ export const apiSlice = createApi({
       const cachedData = cachedDataMapping[endpoint];
 
       if (cachedData) {
-        console.warn('Network unavailable. Returning cached data.');
+        showToast('Network unavailable. Returning cached data.');
         return {data: cachedData};
       }
       showToast('No cached data available.');

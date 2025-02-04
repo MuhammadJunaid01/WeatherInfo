@@ -1,10 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
-import {
-  createNetworkMiddleware,
-  reducer as network,
-} from 'react-native-offline';
+
 import {persistReducer, persistStore} from 'redux-persist';
 
 import {customNetworkMiddleware} from '../../lib';
@@ -17,7 +14,6 @@ import themeReducer from '../features/themeSlice';
 import weatherReducer from '../features/weatherSlice';
 
 // Middleware
-const networkMiddleware = createNetworkMiddleware();
 
 // Persist Configurations
 const persistConfig = (key: string) => ({
@@ -33,7 +29,6 @@ const rootReducer = combineReducers({
   weather: persistReducer(persistConfig('weather'), weatherReducer),
   headline: persistReducer(persistConfig('headline'), newsHeadLineReducer),
   source: persistReducer(persistConfig('source'), newsSourcesSliceReducer),
-  network,
   [apiSlice.reducerPath]: apiSlice.reducer, // Keep RTK Query dynamic fetching reducer
 });
 
@@ -45,7 +40,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore redux-persist actions
       },
-    }).concat(apiSlice.middleware, networkMiddleware, customNetworkMiddleware),
+    }).concat(apiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 });
 

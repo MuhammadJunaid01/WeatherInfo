@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, FlatList, ListRenderItem} from 'react-native';
 import tw from 'twrnc';
 import {Loader, NewsArticleCard, ThemedView} from '../components';
+import ApiError from '../components/shared/ApiError';
 import {screenHeight} from '../config/constants';
 import {useAppSelector} from '../hooks/useReduxHooks';
 import {TabParamList} from '../lib';
@@ -19,8 +20,9 @@ const NewsScreen: React.FC<Props> = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const [triggerGetNews, {data, isFetching, isLoading}] = useLazyGetNewsQuery();
-
+  const [triggerGetNews, {data, isFetching, isLoading, error}] =
+    useLazyGetNewsQuery();
+  console.log('error', error);
   useEffect(() => {
     // Fetch the first page of articles when the component mounts
     triggerGetNews({query: 'bitcoin', page: 1, pageSize: 10});
@@ -80,29 +82,33 @@ const NewsScreen: React.FC<Props> = () => {
 
   return (
     <ThemedView style={tw`flex-1 `}>
-      <FlatList
-        data={articles}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        getItemLayout={getItemLayout}
-        contentContainerStyle={tw` p-2`}
-        ListFooterComponent={ListFooter}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
-        refreshing={isFetching}
-        onRefresh={() => {
-          setArticles([]);
-          setCurrentPage(1);
-          setHasMore(true);
-          triggerGetNews({query: 'bitcoin', page: 1, pageSize: 10});
-        }}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        removeClippedSubviews={true}
-        updateCellsBatchingPeriod={100}
-        scrollEventThrottle={16}
-      />
+      {error && 'status' in error && error.status === 429 ? (
+        <ApiError error={error} />
+      ) : (
+        <FlatList
+          data={articles}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          contentContainerStyle={tw` p-2`}
+          ListFooterComponent={ListFooter}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.5}
+          refreshing={isFetching}
+          onRefresh={() => {
+            setArticles([]);
+            setCurrentPage(1);
+            setHasMore(true);
+            triggerGetNews({query: 'bitcoin', page: 1, pageSize: 10});
+          }}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          removeClippedSubviews={true}
+          updateCellsBatchingPeriod={100}
+          scrollEventThrottle={16}
+        />
+      )}
     </ThemedView>
   );
 };
