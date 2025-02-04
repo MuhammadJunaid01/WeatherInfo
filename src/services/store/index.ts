@@ -7,6 +7,7 @@ import {
 } from 'react-native-offline';
 import {persistReducer, persistStore} from 'redux-persist';
 
+import {customNetworkMiddleware} from '../../lib';
 import {apiSlice} from '../apis/apiSlice';
 import authReducer from '../features/authSlice';
 import newsHeadLineReducer from '../features/newsHeadlineSlice';
@@ -44,7 +45,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore redux-persist actions
       },
-    }).concat(apiSlice.middleware, networkMiddleware),
+    }).concat(apiSlice.middleware, networkMiddleware, customNetworkMiddleware),
   devTools: process.env.NODE_ENV !== 'production',
 });
 

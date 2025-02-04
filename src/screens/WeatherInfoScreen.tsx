@@ -1,12 +1,14 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, {useEffect, useState} from 'react';
 import tw from '../../tailwind';
-import {Loader, ThemedView, WeatherInfo} from '../components';
+import {Loader, ThemedText, ThemedView, WeatherInfo} from '../components';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {useGetWeatherQuery} from '../services/apis/weatherApiSlice';
 import {setWeatherStatus} from '../services/features/weatherSlice';
 
 const WeatherInfoScreen = () => {
+  const {isConnected} = useAppSelector(state => state.network);
+
   const dispatch = useAppDispatch();
   const {theme} = useAppSelector(state => state.theme);
   const {status} = useAppSelector(state => state.weather);
@@ -46,6 +48,7 @@ const WeatherInfoScreen = () => {
   }
   return (
     <ThemedView style={tw` flex-1  p-3 `}>
+      <ThemedText size="h1">isConnected:{isConnected}</ThemedText>
       <WeatherInfo data={data} theme={theme} />
     </ThemedView>
   );

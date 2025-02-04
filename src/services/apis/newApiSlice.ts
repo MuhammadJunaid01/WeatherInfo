@@ -74,7 +74,7 @@ const newsApiSlice = apiSlice.injectEndpoints({
             ...(sortBy && {sortBy}),
             page: page.toString(),
             pageSize: pageSize.toString(),
-            apiKey: process.env.NEWS_API_KEY!,
+            apiKey: '45c7c5c6d2ac401b87bb679eaac59bfc',
           }).toString();
 
           const response = await baseQuery({
@@ -83,13 +83,11 @@ const newsApiSlice = apiSlice.injectEndpoints({
           });
 
           if (response.error) {
-            console.error('API Error:', response.error);
             return {error: response.error};
           }
 
           return {data: response.data as IGenericNewsResponse<INewsArticle>};
         } catch (error) {
-          console.error('Error in queryFn:', error);
           return {error};
         }
       },
@@ -127,8 +125,6 @@ const newsApiSlice = apiSlice.injectEndpoints({
       ) => {
         const state = _queryApi.getState() as RootState;
 
-        console.log('Network connected:', state.network.isConnected);
-
         if (!state.network.isConnected) {
           const offlineData = state.headline.articles;
           const totalResults = state.headline.totalResults;
@@ -144,18 +140,16 @@ const newsApiSlice = apiSlice.injectEndpoints({
 
         try {
           const response = await baseQuery({
-            url: `${NEWS_API_URL}/top-headlines?country=${country}&page=${page}&pageSize=${pageSize}&apiKey=${process.env.NEWS_API_KEY}`,
+            url: `${NEWS_API_URL}/top-headlines?country=${country}&page=${page}&pageSize=${pageSize}&apiKey=45c7c5c6d2ac401b87bb679eaac59bfc`,
             method: 'GET',
           });
 
           if (response.error) {
-            console.error('API Error:', response.error);
             return {error: response.error};
           }
 
           return {data: response.data as IGenericNewsResponse<INewsArticle>};
         } catch (error) {
-          console.error('Error in queryFn:', error);
           return {error};
         }
       },
@@ -206,7 +200,7 @@ const newsApiSlice = apiSlice.injectEndpoints({
             ...(category && {category}),
             ...(language && {language}),
             ...(country && {country}),
-            apiKey: process.env.NEWS_API_KEY!,
+            apiKey: '45c7c5c6d2ac401b87bb679eaac59bfc',
           }).toString();
 
           const response = await baseQuery({
@@ -215,20 +209,17 @@ const newsApiSlice = apiSlice.injectEndpoints({
           });
 
           if (response.error) {
-            console.error('API Error:', response.error);
             return {error: response.error};
           }
 
           return {data: response.data as IGenericNewsResponse<INewsSource[]>};
         } catch (error) {
-          console.error('Error in queryFn:', error);
           return {error};
         }
       },
       async onQueryStarted({}, {dispatch, queryFulfilled}) {
         try {
           const {data} = await queryFulfilled;
-          console.log(data);
           // if (Array.isArray(data.sources)) {
           //   dispatch({
           //     type: 'sources/setSources',

@@ -4,6 +4,7 @@ exports from the specified modules are re-exported from the current module. This
 the current module to access the named exports from these modules directly through the current
 module. */
 export * from './db';
+export * from './middleware';
 export * from './shared.interface';
 export * from './types';
 export * from './utils';

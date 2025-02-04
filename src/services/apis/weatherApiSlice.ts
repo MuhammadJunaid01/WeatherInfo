@@ -21,7 +21,7 @@ const weatherApiSlice = apiSlice.injectEndpoints({
 
         try {
           const response = await baseQuery({
-            url: `${WEATHER_API_URL}?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`,
+            url: `${WEATHER_API_URL}?lat=${lat}&lon=${lon}&appid=15d3bf5add6ee893a41a7476cfa10ba6&units=metric`,
             method: 'GET',
           });
 

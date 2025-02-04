@@ -87,7 +87,6 @@ const HomeScreen = () => {
       pageSize: 5,
     });
   }, [getHeadline, headlineQuery]);
-  console.log('sources', sourcesData?.sources);
   const snapPoints = useMemo(() => ['10%', '40%', '86%'], []);
 
   const onPressModalHandle = useCallback((key: keyof IModals, val: boolean) => {
