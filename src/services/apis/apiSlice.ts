@@ -3,49 +3,61 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {showToast} from '../../lib';
 import {RootState} from '../store'; // Adjust the path to your store
 
-// Define the API
+const getCachedData = (state: RootState, endpoint: string): any => {
+  const cachedDataMapping: Record<string, (state: RootState) => any> = {
+    '/top-headlines': state => state.headline.articles,
+    '/everything': state => state.news.articles,
+    '/weather': state => state.weather.weather,
+  };
+
+  const matchEndpoint = Object.keys(cachedDataMapping).find(key =>
+    endpoint.includes(key),
+  );
+
+  if (matchEndpoint) {
+    return cachedDataMapping[matchEndpoint](state);
+  }
+  return null;
+};
+
+const handleError = (message: string) => {
+  showToast(message);
+  console.error(message);
+  return {
+    error: {
+      status: 'NETWORK_ERROR',
+      data: message,
+    },
+  };
+};
+
 export const apiSlice = createApi({
   tagTypes: ['newsSources', 'newsHeadlines', 'news'],
   baseQuery: async (args, api, extraOptions) => {
-    // Check network status using NetInfo
+    // Check network status
     const netInfo = await NetInfo.fetch();
     const isConnected = netInfo.isConnected;
 
     const endpoint = typeof args === 'string' ? args : args.url;
-    // If offline, return cached  data
+
     if (!isConnected) {
       const state = api.getState() as RootState;
-
-      // Define cached data mapping
-      const cachedDataMapping: Record<string, any> = {
-        'https://newsapi.org/v2/top-headlines/sources?category=general&apiKey=45c7c5c6d2ac401b87bb679eaac59bfc':
-          state.headline.articles,
-        '/https://newsapi.org/v2/everything?page=58&pageSize=10&apiKey=45c7c5c6d2ac401b87bb679eaac59bfc':
-          state.news.articles,
-        'https://api.openweathermap.org/data/2.5/weather?lat=37.372996666666666&lon=-122.10320666666667&appid=15d3bf5add6ee893a41a7476cfa10ba6&units=metric':
-          state.weather.weather,
-      };
-
-      const cachedData = cachedDataMapping[endpoint];
+      const cachedData = getCachedData(state, endpoint);
 
       if (cachedData) {
         showToast('Network unavailable. Returning cached data.');
         return {data: cachedData};
       }
-      showToast('No cached data available.');
-      console.error('No cached data available.');
-      return {
-        error: {
-          status: 'NETWORK_ERROR',
-          data: 'No internet connection and no cached data available for the requested endpoint.',
-        },
-      };
+
+      return handleError(
+        'No internet connection and no cached data available for the requested endpoint.',
+      );
     }
 
-    // Proceed with the actual request if online
+    // Proceed with online request
     return fetchBaseQuery()(args, api, extraOptions);
   },
   endpoints: _builder => ({}),
 });
 
-// Export hooks for usage in components
+//
