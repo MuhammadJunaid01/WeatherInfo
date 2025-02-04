@@ -37,10 +37,12 @@ const ThemedInput: React.FC<IProps> = ({
 
   const inputStyles = useCallback(() => {
     return tw.style(
-      'h-full rounded-lg px-10 py-3 text-base',
+      `h-full rounded-lg px-[${moderateScale(40)}px] py-3 text-[${moderateScale(
+        14,
+      )}px] `,
       isFocused
         ? isDarkMode
-          ? 'border-blue-500 border-2'
+          ? 'border-blue-500 border-2 text-white'
           : 'border-blue-700 border-2'
         : isDarkMode
         ? 'bg-gray-800 text-white'
@@ -55,8 +57,16 @@ const ThemedInput: React.FC<IProps> = ({
   return (
     <View style={tw`relative h-[${moderateScale(55)}px]`}>
       {isShowInputIcon && (
-        <View style={[tw`absolute top-[${18}px] left-3 z-10`, containerStyle]}>
-          <Icon name={iconName} size={iconSize} style={tw`${getIconColor()}`} />
+        <View
+          style={[
+            tw`absolute top-[${moderateScale(18)}px] left-3 z-10`,
+            containerStyle,
+          ]}>
+          <Icon
+            name={iconName}
+            size={moderateScale(iconSize)}
+            style={tw`${getIconColor()}`}
+          />
         </View>
       )}
       <TextInput
@@ -67,10 +77,13 @@ const ThemedInput: React.FC<IProps> = ({
         style={inputStyles()}
       />
       {isPasswordField && (
-        <View style={tw`absolute top-[${moderateScale(18)}px] right-3 z-10`}>
+        <View
+          style={tw`absolute top-[${moderateScale(
+            18,
+          )}px] right-[${moderateScale(12)}px] z-10`}>
           <Icon
             name={showPassword ? 'visibility' : 'visibility-off'}
-            size={20}
+            size={moderateScale(20)}
             style={tw`${getIconColor()}`}
             onPress={togglePasswordVisibility}
           />

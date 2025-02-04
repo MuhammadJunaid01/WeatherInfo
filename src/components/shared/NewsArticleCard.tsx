@@ -2,7 +2,8 @@ import React from 'react';
 import {Linking, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import tw from 'twrnc';
-import {COLORS, screenHeight} from '../../config/constants';
+import {COLORS, moderateScale, screenHeight} from '../../config/constants';
+import {isMobile} from '../../lib';
 import {INewsArticle} from '../../lib/shared.interface';
 import ThemedText from './ThemedText';
 
@@ -14,8 +15,8 @@ interface NewsArticleCardProps {
 
 const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
   article,
-  item_height = screenHeight * 0.47,
   isDarkMode,
+  item_height = screenHeight * 0.89,
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -47,8 +48,8 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
 
   return (
     <View
-      style={tw` rounded-lg ${
-        isDarkMode ? `border border-[${COLORS.primary}]` : 'shadow'
+      style={tw` rounded-lg h-[${moderateScale(item_height)}px] ${
+        isDarkMode ? `border border-[${COLORS.primary}]` : ' bg-white shadow'
       }  m-1 mb-4   `}>
       <View style={tw`relative`}>
         <FastImage
@@ -56,22 +57,24 @@ const NewsArticleCard: React.FC<NewsArticleCardProps> = ({
             uri: article?.urlToImage,
             priority: FastImage.priority.high,
           }}
-          style={tw`w-full h-48`}
+          style={tw`w-full h-[${moderateScale(
+            isMobile() ? item_height / 2.4 : item_height / 1.7,
+          )}px]`}
           resizeMode={FastImage.resizeMode.cover}
         />
         <View style={tw`absolute top-4 left-4 bg-blue-600 px-2 py-1 rounded`}>
-          <ThemedText size="h4" style={tw` text-sm font-medium`}>
+          <ThemedText size="h4" style={tw` ${isDarkMode ? '' : 'text-white'}`}>
             {article?.source?.name}
           </ThemedText>
         </View>
       </View>
 
-      <View style={tw`p-4`}>
+      <View style={tw`px-3 py-1`}>
         <View style={tw`mb-2`}>
           <ThemedText numberOfLines={1} size="h3" style={tw` mb-1`}>
             {article?.title}
           </ThemedText>
-          <ThemedText size="h4" style={tw` `} numberOfLines={3}>
+          <ThemedText size="h5" style={tw` `} numberOfLines={3}>
             {article?.description}
           </ThemedText>
         </View>

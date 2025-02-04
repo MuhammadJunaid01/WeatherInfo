@@ -13,8 +13,6 @@ import newsSourcesSliceReducer from '../features/newsSourcesSlice';
 import themeReducer from '../features/themeSlice';
 import weatherReducer from '../features/weatherSlice';
 
-// Middleware
-
 // Persist Configurations
 const persistConfig = (key: string) => ({
   key,
@@ -23,13 +21,13 @@ const persistConfig = (key: string) => ({
 
 // Combine Persisted Reducers
 const rootReducer = combineReducers({
-  auth: persistReducer(persistConfig('auth'), authReducer),
+  auth: authReducer,
   news: persistReducer(persistConfig('news'), newsReducer),
   theme: persistReducer(persistConfig('theme'), themeReducer),
   weather: persistReducer(persistConfig('weather'), weatherReducer),
   headline: persistReducer(persistConfig('headline'), newsHeadLineReducer),
   source: persistReducer(persistConfig('source'), newsSourcesSliceReducer),
-  [apiSlice.reducerPath]: apiSlice.reducer, // Keep RTK Query dynamic fetching reducer
+  [apiSlice.reducerPath]: apiSlice.reducer,
 });
 
 // Store Configuration
@@ -38,7 +36,7 @@ const store = configureStore({
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore redux-persist actions
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }).concat(apiSlice.middleware, customNetworkMiddleware),
   devTools: process.env.NODE_ENV !== 'production',

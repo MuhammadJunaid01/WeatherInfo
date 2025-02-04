@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unstable-nested-components */
 // DrawerNavigator.tsx
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import React, {useCallback, useMemo} from 'react';
-import {useColorScheme} from 'react-native';
-import {CustomDrawer, CustomDrawerHeader} from '../components';
-import {COLORS} from '../config/constants'; // Ensure COLORS is imported correctly
-import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
-import {DrawerParamList, Theme} from '../lib/types';
-import {NotificationScreen} from '../screens';
-import {setTheme} from '../services/features/themeSlice';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import React, { useCallback, useMemo } from 'react';
+import { useColorScheme } from 'react-native';
+import { CustomDrawer, CustomDrawerHeader } from '../components';
+import { COLORS } from '../config/constants'; // Ensure COLORS is imported correctly
+import { useAppDispatch, useAppSelector } from '../hooks/useReduxHooks';
+import { DrawerParamList, Theme } from '../lib/types';
+import { NotificationScreen } from '../screens';
+import { setTheme } from '../services/features/themeSlice';
 import TabNavigator from './TabNavigator';
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -30,12 +30,10 @@ const DrawerNavigator = () => {
             : 'light'
           : themeVal;
 
-      if (resolvedTheme !== activeTheme) {
-        console.log(`Theme updated: ${resolvedTheme}`); // Optional: log theme changes
-        dispatch(setTheme({theme: resolvedTheme, activeTheme: themeVal}));
-      }
+          dispatch(setTheme({theme: resolvedTheme, activeTheme: themeVal}));
+     
     },
-    [activeTheme, dispatch, systemTheme],
+    [dispatch, systemTheme],
   );
 
   const {activeItemColor, inactiveItemColor, drawerBackgroundColor} = useMemo(

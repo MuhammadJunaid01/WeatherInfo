@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, TouchableOpacityProps} from 'react-native';
 import tw from '../../../tailwind';
-import {COLORS} from '../../config/constants';
+import {COLORS, scale} from '../../config/constants';
 import {Size} from '../../lib';
 import ThemedText from './ThemedText';
 interface IProps extends TouchableOpacityProps {
@@ -33,7 +33,7 @@ const ThemedButton: React.FC<IProps> = ({
         buttonStyle,
         tw` m-1 ${
           isDarkMode ? `border border-[${COLORS.primary}]` : '  shadow-sm'
-        } rounded-lg p-4`,
+        } rounded-lg p-[${scale(16)}px]`,
         style,
       ]}
       {...rest}>

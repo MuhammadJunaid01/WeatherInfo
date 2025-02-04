@@ -1,7 +1,7 @@
 import React from 'react';
 import {Image, View} from 'react-native';
 import tw from 'twrnc';
-import {COLORS} from '../config/constants';
+import {COLORS, scale} from '../config/constants';
 import {INewsArticle} from '../lib';
 import {ThemedText} from './shared';
 
@@ -29,14 +29,14 @@ const TopNewsHeadline: React.FC<TopNewsHeadlineProps> = ({
 
   return (
     <View
-      style={tw`flex-row m-1 ${
+      style={tw`flex-row flex-1 m-1 ${
         isDarkMode
           ? ` border border-[${COLORS.primary}]`
           : 'bg-white  shadow-md'
-      } p-2 rounded-lg `}>
+      } p-[${scale(8)}px] rounded-lg `}>
       <Image
         source={{uri: article.urlToImage}}
-        style={tw`w-24 h-24 rounded-lg mr-4`}
+        style={tw`w-[${scale(96)}px] h-[${scale(96)}px] rounded-lg mr-4`}
         resizeMode="cover"
       />
       <View style={tw`flex-1`}>

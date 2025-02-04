@@ -3,8 +3,8 @@ import React, {useCallback, useMemo} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 import tw from 'twrnc';
 import {MenuIcon, NotificationIcon} from '../../assets/icons';
-import {COLORS} from '../../config/constants';
-import {Theme} from '../../lib';
+import {COLORS, moderateScale, scale} from '../../config/constants';
+import {isMobile, Theme} from '../../lib';
 import {FirebaseUser} from '../../lib/shared.interface';
 import ThemedText from './ThemedText';
 import ThemedView from './ThemedView';
@@ -44,14 +44,16 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
 
   return (
     <ThemedView
-      style={tw`h-16 flex-row items-center justify-between px-4 shadow-sm`}>
+      style={tw`h-[${moderateScale(
+        64,
+      )}px] flex-row items-center justify-between px-4 shadow-sm`}>
       {/* Left Section - Menu and Title */}
       <View style={tw`flex-row items-center bg-transparent`}>
         <TouchableOpacity
           onPress={handleMenuPress}
           style={tw`mr-3 p-2`}
           hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-          <MenuIcon size={22} fill={iconColor} />
+          <MenuIcon size={moderateScale(22)} fill={iconColor} />
         </TouchableOpacity>
         <ThemedText size="h3">{title}</ThemedText>
       </View>
@@ -63,11 +65,13 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
             onPress={handleNotificationPress}
             style={tw`mr-4 relative p-2`}
             hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-            <NotificationIcon size={22} fill={iconColor} />
+            <NotificationIcon size={moderateScale(22)} fill={iconColor} />
             {notificationCount > 0 && (
               <View
-                style={tw`absolute top-0 right-0 bg-red-500 rounded-full h-5 w-5 items-center justify-center`}>
-                <ThemedText size="h3" style={tw`text-white text-xs font-bold`}>
+                style={tw`absolute top-0 right-0 bg-red-500 rounded-full h-[${moderateScale(
+                  17,
+                )}px] w-[${moderateScale(17)}px] items-center justify-center`}>
+                <ThemedText size="h3" style={tw``}>
                   {notificationCount > 99 ? '99+' : notificationCount}
                 </ThemedText>
               </View>
@@ -87,7 +91,7 @@ const CustomDrawerHeader: React.FC<CustomDrawerHeaderProps> = ({
               navigation.navigate('SignUp');
             }}
             style={[
-              tw`h-8 w-auto px-4 rounded-full ${
+              tw`h-[${moderateScale(24)}px] w-auto px-4 rounded-full ${
                 theme === 'dark' ? `border border-[${COLORS.primary}]` : ''
               } items-center justify-center`,
               {backgroundColor: signUpButtonColor},

@@ -11,13 +11,13 @@ interface IProps {
 const WeatherInfoCard: React.FC<IProps> = ({label, value, isDarkMode}) => {
   return (
     <View
-      style={tw` ${
-        isDarkMode ? `border border-[${COLORS.primary}]` : 'shadow'
+      style={tw`   ${
+        isDarkMode ? `border border-[${COLORS.primary}]` : ' bg-white shadow'
       }  p-4 rounded-lg m-2`}>
-      <ThemedText size="h4" style={tw` mb-1`}>
+      <ThemedText numberOfLines={1} size="h5" style={tw` mb-0`}>
         {label}
       </ThemedText>
-      <ThemedText size="h3" style={tw``}>
+      <ThemedText numberOfLines={1} size="h3" style={tw` `}>
         {value}
       </ThemedText>
     </View>

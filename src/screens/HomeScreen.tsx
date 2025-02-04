@@ -14,7 +14,7 @@ import AnimatedLoader from '../components/shared/AnimatedLoader';
 import ApiError from '../components/shared/ApiError';
 import ThemedButton from '../components/shared/ThemedButton';
 import TopNewsHeadline from '../components/TopNewsHeadline';
-import {COLORS, moderateScale, screenWidth} from '../config/constants';
+import {COLORS, moderateScale, scale, screenWidth} from '../config/constants';
 import {useAppDispatch, useAppSelector} from '../hooks/useReduxHooks';
 import {useLazyGetNewsHeadLineQuery} from '../services/apis/newApiSlice';
 import {setTheme} from '../services/features/themeSlice';
@@ -164,9 +164,13 @@ const HomeScreen = () => {
         headline?.articles?.length > 0 && (
           <View style={tw`   w-full`}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {headline.articles?.map((head, i) => {
+              {articles?.map((head, i) => {
                 return (
-                  <View style={tw` w-[${screenWidth * 0.67}px] mr-3`} key={i}>
+                  <View
+                    style={tw` h-[${scale(120)}px]  w-[${
+                      screenWidth * 0.67
+                    }px] mr-3`}
+                    key={i}>
                     <TopNewsHeadline isDarkMode={isDarkMode} article={head} />
                   </View>
                 );

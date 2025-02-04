@@ -67,22 +67,8 @@ const newsApiSlice = apiSlice.injectEndpoints({
         `${NEWS_API_URL}/top-headlines?country=${country}&page=${page}&pageSize=${pageSize}&apiKey=${process.env.NEWS_API_KEY}`,
       providesTags: ['newsHeadlines'],
       onQueryStarted: async ({}, {dispatch, queryFulfilled}) => {
-        try {
-          const {data} = await queryFulfilled;
-          if (Array.isArray(data.articles)) {
-            dispatch(
-              setHeadline({
-                articles: data.articles,
-                totalResults: data.totalResults,
-                status: data.status,
-              }),
-            );
-          } else {
-            showToast('Expected data.articles to be an array');
-          }
-        } catch (error: any) {
-          showToast(error?.message || 'Unexpected Error!');
-        }
+        const {data} = await queryFulfilled;
+        dispatch(setHeadline(data));
       },
     }),
 
@@ -99,11 +85,9 @@ const newsApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ['newsSources'],
       onQueryStarted: async ({}, {dispatch, queryFulfilled}) => {
-        try {
-          const {data} = await queryFulfilled;
+        const {data} = await queryFulfilled;
 
-          dispatch(setSources(data));
-        } catch (error) {}
+        dispatch(setSources(data));
       },
     }),
   }),

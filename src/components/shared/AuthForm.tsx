@@ -103,8 +103,6 @@ const AuthForm: React.FC<IAuthProps> = ({
     }`;
   };
 
-  const getIconColor = () => (isDarkMode ? 'text-white' : 'text-gray-400');
-
   return (
     <ThemedView style={tw`flex-1`}>
       <KeyboardAvoidingView
@@ -116,10 +114,18 @@ const AuthForm: React.FC<IAuthProps> = ({
           <View style={tw`px-4`}>
             {/* Header */}
             <View style={tw`mb-8`}>
-              <ThemedText size="h1" style={tw`mb-1`}>
-                Create Account
-              </ThemedText>
-              <ThemedText size="h5">Sign up to get started!</ThemedText>
+              {isSignUp ? (
+                <View>
+                  <ThemedText size="h1" style={tw`mb-1`}>
+                    Create Account
+                  </ThemedText>
+                  <ThemedText size="h5">Sign up to get started!</ThemedText>
+                </View>
+              ) : (
+                <ThemedText size="h1" style={tw`mb-1`}>
+                  Sign In
+                </ThemedText>
+              )}
             </View>
 
             {/* Email Input */}
@@ -182,36 +188,7 @@ const AuthForm: React.FC<IAuthProps> = ({
                 iconName="lock"
                 isPasswordField
               />
-              {/* <View style={tw`relative h-[${moderateScale(55)}px]`}>
-                <View
-                  style={tw`absolute top-[${moderateScale(18)}px] left-3 z-10`}>
-                  <Icon name="lock" size={20} style={tw`${getIconColor()}`} />
-                </View>
-                <TextInput
-                  value={formData.password}
-                  onChangeText={text => handleChange('password', text)}
-                  placeholder="Enter your password"
-                  placeholderTextColor={
-                    isDarkMode ? COLORS.light.primary : COLORS.dark.primary
-                  }
-                  secureTextEntry={!showPassword}
-                  onFocus={() => setFocusedField('password')}
-                  onBlur={() => setFocusedField(null)}
-                  style={getInputStyles(focusedField === 'password')}
-                />
-                <TouchableOpacity
-                  hitSlop={{right: 20, top: 20, left: 20, bottom: 20}}
-                  onPress={togglePasswordVisibility}
-                  style={tw`absolute top-[${moderateScale(
-                    18,
-                  )}px] right-3 z-10`}>
-                  <Icon
-                    name={showPassword ? 'visibility-off' : 'visibility'}
-                    size={20}
-                    style={tw`${getIconColor()}`}
-                  />
-                </TouchableOpacity>
-              </View> */}
+
               {errors.password ? (
                 <ThemedText size="h4" style={tw`my-1 text-red-400`}>
                   {errors.password}
@@ -254,25 +231,25 @@ const AuthForm: React.FC<IAuthProps> = ({
                   style={tw`${
                     isDarkMode ? 'text-white' : 'text-gray-50'
                   } text-center`}>
-                  Sign Up
+                  {isSignUp ? 'Sign Up' : 'SignIn'}
                 </ThemedText>
               )}
             </TouchableOpacity>
 
             {/* Login Link */}
             <View style={tw`flex-row justify-center`}>
-              <Text style={tw`text-gray-600`}>
+              <ThemedText size="h4" style={tw``}>
                 {isSignUp
                   ? 'Already have an account?'
                   : 'Don’t have an account yet?'}
-              </Text>
+              </ThemedText>
               <TouchableOpacity
                 onPress={() =>
                   navigation?.navigate(isSignUp ? 'SignIn' : 'SignUp')
                 }>
-                <Text style={tw`text-blue-500 font-semibold`}>
+                <ThemedText size="h4" style={tw`text-blue-500 font-semibold`}>
                   {isSignUp ? 'SignIn' : 'SignUp'}
-                </Text>
+                </ThemedText>
               </TouchableOpacity>
             </View>
           </View>

@@ -1,6 +1,6 @@
 import React, {memo, useMemo} from 'react';
 import {Text, TextProps, TextStyle} from 'react-native';
-import {scale} from 'react-native-size-matters';
+import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../config/constants';
 import {useAppSelector} from '../../hooks/useReduxHooks';
 import {Size} from '../../lib';
@@ -34,38 +34,38 @@ const ThemedText: React.FC<IProps> = ({
       case 'h1':
         return {
           ...baseStyle,
-          fontSize: scale(21),
+          fontSize: moderateScale(21),
           fontWeight: 'bold' as TextStyle['fontWeight'],
         };
       case 'h2':
         return {
           ...baseStyle,
-          fontSize: scale(17),
+          fontSize: moderateScale(17),
           fontWeight: 'bold' as TextStyle['fontWeight'],
         };
       case 'h3':
         return {
           ...baseStyle,
-          fontSize: scale(13),
+          fontSize: moderateScale(13),
           fontWeight: '600' as TextStyle['fontWeight'],
         };
       case 'h4':
         return {
           ...baseStyle,
-          fontSize: scale(12.5),
+          fontSize: moderateScale(12.5),
           lineHeight: 21,
           fontWeight: '500' as TextStyle['fontWeight'],
         };
       case 'h5':
         return {
           ...baseStyle,
-          fontSize: scale(11),
+          fontSize: moderateScale(11),
           fontWeight: '400' as TextStyle['fontWeight'],
         };
       case 'h6':
         return {
           ...baseStyle,
-          fontSize: scale(9),
+          fontSize: moderateScale(9),
           fontWeight: '300' as TextStyle['fontWeight'],
         };
       default:
